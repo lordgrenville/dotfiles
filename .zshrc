@@ -7,7 +7,7 @@ export ZSH="/Users/joshfriedlander/.oh-my-zsh"
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="spaceship"
 SPACESHIP_PROMPT_ADD_NEWLINE="false"
 SPACESHIP_PROMPT_SEPARATE_LINE="false"
@@ -39,6 +39,7 @@ SPACESHIP_PROMPT_ORDER=(
   exit_code     # Exit code section
   char          # Prompt character
 )
+
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -80,7 +81,7 @@ SPACESHIP_PROMPT_ORDER=(
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
 # much, much faster.
-DISABLE_UNTRACKED_FILES_DIRTY="true"
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
@@ -98,7 +99,7 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git virtualenv conda-zsh-completion)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -119,6 +120,9 @@ source $ZSH/oh-my-zsh.sh
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
+# if you leave a space before a command, it isn't written to history - good for passwords!
+setopt histignorespace
+
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
@@ -128,10 +132,32 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias gs='git status'
-alias schem='cd ../ds-schemata-service'
-alias com='cd ../ds-common'
-alias fe='cd ../ds-feature-engineering-service'
 alias ll='exa --all --binary --group --header --long --git --color=automatic'
+alias cact='conda activate'
+alias cdeact='conda deactivate'
+
+# the below is a function. functions are defined either by the word function, or by the syntax foo ()
+# it calls git credential-osxkeychain and begins a HERE DOCUMENT, a way to put interactive content into a shell
+# it uses <<, which means "keep listening until you see this character" (in this case the Unix special char EOF)
+# $1 and $2 are the username and password args
+
+update_git () {
+git credential-osxkeychain erase <<EOF
+host=github.com
+protocol=https
+EOF
+git credential-osxkeychain store <<EOF
+host=github.com
+protocol=https
+username=$1
+password=$2
+EOF
+if [ "$1" = "lordgrenville" ]; then
+  git config --global user.username "lordgrenville" && git config --global user.email "16547083+lordgrenville@users.noreply.github.com"
+elif  [ "$1" = "josh-friedlander-kando" ]; then
+  git config --global user.username "josh-friedlander-kando" && git config --global user.email "josh@kando.eco"
+fi
+} 
 
 # added by Miniconda3 installer
 # export PATH="/Users/joshfriedlander/miniconda3/bin:$PATH"  # commented out by conda initialize
@@ -156,7 +182,7 @@ unset __conda_setup
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/joshfriedlander/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+__conda_setup="$('/Users/joshfriedlander/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
@@ -170,10 +196,9 @@ unset __conda_setup
 # <<< conda initialize <<<
 bindkey "^[f" forward-word
 bindkey "^[b" backward-word
-export PYTHONPATH=$PYTHONPATH:/Users/joshfriedlander/pai/projects/ds-common
-export PYTHONPATH=$PYTHONPATH:/Users/joshfriedlander/pai/projects/ds-schemata-service
-export PYTHONPATH=$PYTHONPATH:/Users/joshfriedlander/pai/projects/ds-feature-engineering-service
-export PYTHONPATH=$PYTHONPATH:/Users/joshfriedlander/pai/projects/ds-orchestrator
-export PYTHONPATH=$PYTHONPATH:/Users/joshfriedlander/pai/projects/pai-tsfresh
-export PYTHONPATH=$PYTHONPATH:/Users/joshfriedlander/pai/projects/ds-rank-learn-service
-export PYTHONPATH=$PYTHONPATH:/Users/joshfriedlander/pai/projects/ds-visualization-service
+export LC_ALL=en_US.UTF-8
+
+export VIRTUAL_ENV_DISABLE_PROMPT=0
+. ~/.ghcup/env
+[ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
+export PATH="/Users/joshfriedlander/.local/bin:$PATH"
