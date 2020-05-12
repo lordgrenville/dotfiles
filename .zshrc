@@ -99,7 +99,7 @@ SPACESHIP_PROMPT_ORDER=(
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git virtualenv conda-zsh-completion)
+plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -120,7 +120,6 @@ source $ZSH/oh-my-zsh.sh
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
-# if you leave a space before a command, it isn't written to history - good for passwords!
 setopt histignorespace
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
@@ -136,12 +135,21 @@ alias ll='exa --all --binary --group --header --long --git --color=automatic'
 alias cact='conda activate'
 alias cdeact='conda deactivate'
 
+bindkey "^[f" forward-word
+bindkey "^[b" backward-word
+bindkey -e
+bindkey \^U backward-kill-line
+
+export LC_ALL=en_US.UTF-8
+export VIRTUAL_ENV_DISABLE_PROMPT=0
+export PATH="/Users/joshfriedlander/.local/bin:$PATH"
+
 # the below is a function. functions are defined either by the word function, or by the syntax foo ()
 # it calls git credential-osxkeychain and begins a HERE DOCUMENT, a way to put interactive content into a shell
 # it uses <<, which means "keep listening until you see this character" (in this case the Unix special char EOF)
 # $1 and $2 are the username and password args
 
-update_git () {
+switch_git_cred () {
 git credential-osxkeychain erase <<EOF
 host=github.com
 protocol=https
@@ -150,7 +158,7 @@ git credential-osxkeychain store <<EOF
 host=github.com
 protocol=https
 username=$1
-password=$2
+password=$(<~/ghpw.txt)
 EOF
 if [ "$1" = "lordgrenville" ]; then
   git config --global user.username "lordgrenville" && git config --global user.email "16547083+lordgrenville@users.noreply.github.com"
@@ -159,46 +167,24 @@ elif  [ "$1" = "josh-friedlander-kando" ]; then
 fi
 } 
 
-# added by Miniconda3 installer
-# export PATH="/Users/joshfriedlander/miniconda3/bin:$PATH"  # commented out by conda initialize
-# . /Users/joshfriedlander/miniconda3/etc/profile.d/conda.sh  # commented out by conda initialize
+# heroku autocomplete setup
+HEROKU_AC_ZSH_SETUP_PATH=/Users/joshfriedlander/Library/Caches/heroku/autocomplete/zsh_setup && test -f $HEROKU_AC_ZSH_SETUP_PATH && source $HEROKU_AC_ZSH_SETUP_PATH;export PATH="/usr/local/sbin:$PATH"
 
-# added by Miniconda3 4.5.12 installer
-# >>> conda init >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$(CONDA_REPORT_ERRORS=false '/Users/joshfriedlander/miniconda3/bin/conda' shell.bash hook 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    \eval "$__conda_setup"
-else
-    if [ -f "/Users/joshfriedlander/miniconda3/etc/profile.d/conda.sh" ]; then
-# . "/Users/joshfriedlander/miniconda3/etc/profile.d/conda.sh"  # commented out by conda initialize
-        :
-    else
-        \export PATH="/Users/joshfriedlander/miniconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda init <<<
+. ~/.ghcup/env
+[ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/Users/joshfriedlander/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+__conda_setup="$('/Users/joshfriedlander/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "/Users/joshfriedlander/miniconda3/etc/profile.d/conda.sh" ]; then
-        . "/Users/joshfriedlander/miniconda3/etc/profile.d/conda.sh"
+    if [ -f "/Users/joshfriedlander/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/joshfriedlander/anaconda3/etc/profile.d/conda.sh"
     else
-        export PATH="/Users/joshfriedlander/miniconda3/bin:$PATH"
+        export PATH="/Users/joshfriedlander/anaconda3/bin:$PATH"
     fi
 fi
 unset __conda_setup
 # <<< conda initialize <<<
-bindkey "^[f" forward-word
-bindkey "^[b" backward-word
-export LC_ALL=en_US.UTF-8
 
-export VIRTUAL_ENV_DISABLE_PROMPT=0
-. ~/.ghcup/env
-[ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
-export PATH="/Users/joshfriedlander/.local/bin:$PATH"
