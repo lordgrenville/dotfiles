@@ -99,7 +99,7 @@ SPACESHIP_PROMPT_ORDER=(
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git jump)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -121,6 +121,7 @@ source $ZSH/oh-my-zsh.sh
 # export ARCHFLAGS="-arch x86_64"
 
 setopt histignorespace
+setopt hist_ignore_dups
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -130,10 +131,10 @@ setopt histignorespace
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias gs='git status'
-alias ll='exa --all --binary --group --header --long --git --color=automatic'
+alias ll="exa --color auto --all --group-directories-first --long --group --header --modified --sort=name --git --time-style=long-iso --classify"
 alias cact='conda activate'
 alias cdeact='conda deactivate'
+alias cswitch='conda deactivate && conda activate'
 
 bindkey "^[f" forward-word
 bindkey "^[b" backward-word
@@ -142,7 +143,6 @@ bindkey \^U backward-kill-line
 
 export LC_ALL=en_US.UTF-8
 export VIRTUAL_ENV_DISABLE_PROMPT=0
-export PATH="/Users/joshfriedlander/.local/bin:$PATH"
 
 # the below is a function. functions are defined either by the word function, or by the syntax foo ()
 # it calls git credential-osxkeychain and begins a HERE DOCUMENT, a way to put interactive content into a shell
@@ -167,12 +167,6 @@ elif  [ "$1" = "josh-friedlander-kando" ]; then
 fi
 } 
 
-# heroku autocomplete setup
-HEROKU_AC_ZSH_SETUP_PATH=/Users/joshfriedlander/Library/Caches/heroku/autocomplete/zsh_setup && test -f $HEROKU_AC_ZSH_SETUP_PATH && source $HEROKU_AC_ZSH_SETUP_PATH;export PATH="/usr/local/sbin:$PATH"
-
-. ~/.ghcup/env
-[ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
-
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$('/Users/joshfriedlander/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
@@ -187,4 +181,3 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
-
