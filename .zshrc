@@ -131,6 +131,7 @@ setopt hist_ignore_dups
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias gs='git status'
 alias ll="exa --color auto --all --group-directories-first --long --group --header --modified --sort=name --git --time-style=long-iso --classify"
 alias cact='conda activate'
 alias cdeact='conda deactivate'
@@ -166,6 +167,15 @@ elif  [ "$1" = "josh-friedlander-kando" ]; then
   git config --global user.username "josh-friedlander-kando" && git config --global user.email "josh@kando.eco"
 fi
 } 
+
+# quick search downloaded epub: unzip latest file in Downloads, and (recursive, case-insensitive) grep for first argument
+book () {
+cd ~/Downloads
+cp *(om[1]) foo.zip
+unzip foo.zip -d foo/
+cd foo/
+grep -RIi $1 .
+}
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
