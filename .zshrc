@@ -122,6 +122,7 @@ source $ZSH/oh-my-zsh.sh
 
 setopt histignorespace
 setopt hist_ignore_dups
+SAVEHIST=9999999
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
