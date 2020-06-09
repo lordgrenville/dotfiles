@@ -20,7 +20,6 @@ set runtimepath^=~/.vim/bundle/ctrlp.vim
 map <F5> :NERDTreeFocus<CR>
 " explanations at https://dougblack.io/words/a-good-vimrc.html
 map Y ^y$
-
 " from https://github.com/thoughtbot/dotfiles/blob/master/vimrc
 " Leader
 let mapleader = " "
