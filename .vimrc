@@ -1,8 +1,10 @@
-set clipboard=unnamed
+set shell=/bin/zsh
+
+set clipboard=unnamed " use system clipboard
 set laststatus=2 " leave status line on
 set statusline=%F%m%r%h%w%=(%{&ff}/%Y)\ (line\ %l\/%L,\ col\ %c)\
 set backspace=indent,eol,start
-set hlsearch
+set hlsearch " and to clear the annoying highlighting use :noh or :let @/ = ""
 set incsearch " jump to closest instance during search
 set ignorecase " case insensitive search
 set smartcase " if using a capital, search becomes case sensitive
@@ -14,7 +16,7 @@ nnoremap N Nzzzv
 
 syntax enable
 set background=dark
-colorscheme monokai
+silent! colorscheme monokai " if you don't find it, I don't want to hear you whine about it
 
 let no_buffers_menu=1
 set scrolloff=3 " number of lines to keep above and below the cursor
@@ -34,7 +36,7 @@ set cursorline
 set shiftwidth=4
 set hidden "means hidden buffers are loaded into memory, so no need to save
 set splitright
-set splitbelow  "splits happen the opposite to the way vim likes
+set splitbelow  "splits happen opposite to the way vim likes
 
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 set runtimepath^=~/.vim/bundle/YouCompleteMe

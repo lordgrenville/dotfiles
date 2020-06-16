@@ -1,5 +1,11 @@
-# path settings in general should be here
-# note lower-case path isn't the same as PATH - it's a zsh convenience, PATH is updated based on it but gives you more convenience (eg can use arrays)
 path+=/usr/local/sbin
-# the below keeps only unique values in path!
 typeset -U path
+# adding some aliases here (which are already present in interactive shells via oh-my-zsh git plugin) for use in vim
+# so...might screw some stuff up. but has anyone ever *wanted* to use GhostScript?
+alias gs='git status'
+alias gd='git diff'
+alias gds='git diff --staged'
+alias gcmsg='git commit -m'
+alias gp='git push'
+alias glo='git log --oneline --decorate'
+alias ll='exa --color auto --all --group-directories-first --long --group --header --modified --sort=name --git --time-style=long-iso --classify'
