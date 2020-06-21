@@ -29,9 +29,17 @@ set shell=/bin/zsh
 
 set rtp+=/usr/local/opt/fzf  " add FZF to runtime path
 set rtp+=~/.vim/bundle/YouCompleteMe
+set rtp+=~/.vim/bundle/vim2hs
+
+set makeprg=ghc
+" if working with other compiled languages can prefix autocmd Filetype haskell
+" since set autowrite no need to save before compiling - will save before make automatically
 
 syntax enable
 silent! colorscheme monokai " if you don't find it, I don't want to hear you whine about it
+
+au BufRead,BufNewFile *.txt,*.md set wrap linebreak nolist textwidth=0 wrapmargin=0
+" text file options - considered bad practice (https://vim.fandom.com/wiki/Keep_your_vimrc_file_clean) but for now it's only this
 
 " Display extra whitespace
 set list listchars=tab:»·,trail:·,nbsp:·

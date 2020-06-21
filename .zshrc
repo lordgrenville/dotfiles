@@ -192,3 +192,4 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
+[ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
