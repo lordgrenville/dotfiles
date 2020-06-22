@@ -34,6 +34,7 @@ set rtp+=~/.vim/bundle/vim2hs
 set makeprg=ghc
 " if working with other compiled languages can prefix autocmd Filetype haskell
 " since set autowrite no need to save before compiling - will save before make automatically
+nnoremap <leader>m :make %<CR>
 
 syntax enable
 silent! colorscheme monokai " if you don't find it, I don't want to hear you whine about it
