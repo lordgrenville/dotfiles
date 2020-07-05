@@ -14,6 +14,7 @@ set shiftwidth=4
 set hidden "means hidden buffers are loaded into memory, so no need to save
 set splitright
 set splitbelow  "splits happen opposite to the way vim likes
+set nofoldenable   " i'll fold my code if i want to, thank you very much
 
 set clipboard=unnamed " use system clipboard
 set laststatus=2 " leave status line on
@@ -39,8 +40,7 @@ nnoremap <F1> :make %<CR>
 syntax enable
 silent! colorscheme monokai " if you don't find it, I don't want to hear you whine about it
 
-au BufRead,BufNewFile *.txt,*.md set wrap linebreak nolist textwidth=0 wrapmargin=0
-" text file options - considered bad practice (https://vim.fandom.com/wiki/Keep_your_vimrc_file_clean) but for now it's only this
+filetype plugin on
 
 " Display extra whitespace
 set list listchars=tab:»·,trail:·,nbsp:·
@@ -74,6 +74,8 @@ nnoremap <Leader><Leader> :FZFMru<CR>
 nnoremap <silent> <F2> :FZF ~/Documents/research<CR>
 " as in , most of my stuff is here, and it won't take a million years as it would to search ~/
 nnoremap <silent> <F5> :NERDTreeToggle<CR>
+" Change the current working directory to the directory that the current file you are editing is in.
+nnoremap <Leader>cd :cd %:p:h <CR>
 
 "" Buffer commands
 noremap <leader>b :bp<CR>
