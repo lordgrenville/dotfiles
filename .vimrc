@@ -15,6 +15,8 @@ set hidden "means hidden buffers are loaded into memory, so no need to save
 set splitright
 set splitbelow  "splits happen opposite to the way vim likes
 set nofoldenable   " i'll fold my code if i want to, thank you very much
+set nocompatible  " no need for vi compatibility in 2020 AD
+set ttyfast  " supposed to be faster?
 
 set clipboard=unnamed " use system clipboard
 set laststatus=2 " leave status line on
@@ -36,6 +38,8 @@ set makeprg=ghc
 " if working with other compiled languages can prefix autocmd Filetype haskell
 " since set autowrite no need to save before compiling - will save before make automatically
 nnoremap <F1> :make %<CR>
+" save a shift
+nnoremap ; :
 
 syntax enable
 silent! colorscheme monokai " if you don't find it, I don't want to hear you whine about it
@@ -55,15 +59,12 @@ if has('persistent_undo')
 endif
 
 map Y ^y$
-noremap j gj
-nnoremap k gk
 nnoremap gV `[v`]
 " explanations at https://dougblack.io/words/a-good-vimrc.html
 
 " pressing n in search  will center on the line it's found in.
 nnoremap n nzzzv
 nnoremap N Nzzzv
-
 
 " from https://github.com/thoughtbot/dotfiles/blob/master/vimrc
 " Leader
@@ -77,13 +78,16 @@ nnoremap <silent> <F5> :NERDTreeToggle<CR>
 " Change the current working directory to the directory that the current file you are editing is in.
 nnoremap <Leader>cd :cd %:p:h <CR>
 
-"" Buffer commands
+nmap <C-m> gcc j
+"make vim-comment more like pycharm - note can't be nore since gcc is recursive
+
+" Buffer commands
 noremap <leader>b :bp<CR>
 noremap <leader>n :bn<CR>
 noremap <leader>k :bd<CR>
 nnoremap <F6> <C-^>
 
-"" Simplify switching windows
+" Simplify switching windows
 noremap <C-j> <C-w>j
 noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
@@ -91,6 +95,12 @@ noremap <C-h> <C-w>h
 
 " remove trailing whitespaces
 command! FixWhitespace :%s/\s\+$//e
+
+" Open help in vertical right tab
+augroup vimrc_help
+  autocmd!
+  autocmd BufEnter *.txt if &buftype == 'help' | wincmd L | endif
+augroup END
 
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
 let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
@@ -134,3 +144,21 @@ command! FZFMru call fzf#run({
 \  'options': '-m -x +s',
 \  'down':    '40%'})
 
+let g:ale_enabled = 1
+let g:ale_completion_enabled = 0
+let g:ale_lint_delay = 200 " millisecs
+" let g:ale_lint_on_text_changed = 'always' " never/insert/normal/always
+let g:ale_lint_on_enter = 1
+let g:ale_lint_on_filetype_changed = 1
+let g:ale_lint_on_save = 1
+let g:ale_fix_on_save = 1
+let g:ale_set_loclist = 0
+let g:ale_set_quickfix = 1
+" let g:ale_open_list = 1
+
+" Load all plugins now.
+" Plugins need to be added to runtimepath before helptags can be generated.
+packloadall
+" Load all of the helptags now, after plugins have been loaded.
+" All messages and errors will be ignored.
+silent! helptags ALL
