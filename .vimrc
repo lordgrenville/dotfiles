@@ -18,6 +18,18 @@ set nofoldenable   " i'll fold my code if i want to, thank you very much
 set nocompatible  " no need for vi compatibility in 2020 AD
 set ttyfast  " supposed to be faster?
 
+" coc
+set shortmess+=c
+set signcolumn=number
+" inoremap <silent><expr> <TAB>
+      " \ pumvisible() ? "\<C-n>" :
+      " \ <SID>check_back_space() ? "\<TAB>" :
+      " \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
 set clipboard=unnamed " use system clipboard
 set laststatus=2 " leave status line on
 set statusline=%F%m%r%h%w%=(%{&ff}/%Y)\ (line\ %l\/%L,\ col\ %c)\
@@ -31,17 +43,25 @@ set scrolloff=3 " number of lines to keep above and below the cursor
 set shell=/bin/zsh
 
 set rtp+=/usr/local/opt/fzf  " add FZF to runtime path
-set rtp+=~/.vim/bundle/YouCompleteMe
+" set rtp+=~/.vim/bundle/YouCompleteMe
 set rtp+=~/.vim/bundle/vim2hs
+" set rtp+=~/.vim/pack/coc/
 
 set makeprg=ghc
 " if working with other compiled languages can prefix autocmd Filetype haskell
 " since set autowrite no need to save before compiling - will save before make automatically
 nnoremap <F1> :make %<CR>
-" save a shift
-nnoremap ; :
+" i do this a lot and s is totally useless
+nnoremap s :noh<CR>
+nnoremap w W
+nnoremap W w
+nnoremap E e
+nnoremap e E
+nnoremap b B
+nnoremap b B
 
 syntax enable
+set t_Co=256
 silent! colorscheme monokai " if you don't find it, I don't want to hear you whine about it
 
 filetype plugin on
@@ -151,10 +171,12 @@ let g:ale_lint_delay = 200 " millisecs
 let g:ale_lint_on_enter = 1
 let g:ale_lint_on_filetype_changed = 1
 let g:ale_lint_on_save = 1
-let g:ale_fix_on_save = 1
+let g:ale_fix_on_save = 0
 let g:ale_set_loclist = 0
 let g:ale_set_quickfix = 1
-" let g:ale_open_list = 1
+let g:ale_fixers = {'python': ['autopep8', 'isort', 'yapf'], 'haskell': ['hlint']}
+let g:ale_linters = {'python': ['pylint'], 'haskell': ['hlint'], 'sh': ['shellcheck']}
+" let g:ale_open_list = 0
 
 " Load all plugins now.
 " Plugins need to be added to runtimepath before helptags can be generated.
