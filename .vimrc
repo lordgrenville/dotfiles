@@ -17,6 +17,7 @@ set splitbelow  "splits happen opposite to the way vim likes
 set nofoldenable   " i'll fold my code if i want to, thank you very much
 set nocompatible  " no need for vi compatibility in 2020 AD
 set ttyfast  " supposed to be faster?
+set mouse=a " resisted for a while but now this is pretty useful :)
 
 " coc
 set shortmess+=c
@@ -53,12 +54,6 @@ set makeprg=ghc
 nnoremap <F1> :make %<CR>
 " i do this a lot and s is totally useless
 nnoremap s :noh<CR>
-nnoremap w W
-nnoremap W w
-nnoremap E e
-nnoremap e E
-nnoremap b B
-nnoremap b B
 
 syntax enable
 set t_Co=256
@@ -184,3 +179,10 @@ packloadall
 " Load all of the helptags now, after plugins have been loaded.
 " All messages and errors will be ignored.
 silent! helptags ALL
+set guifont=FiraMonoForPowerline-Medium:h16
+
+" coc autocomplete behave like PyCharm (tab selects first option and closes)
+inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+
+" escape to exit terminal mode
+tnoremap <Esc> <C-\><C-n>:bd!<CR>
