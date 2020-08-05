@@ -81,7 +81,7 @@ fi
 book () {
 cd ~/Downloads
 cp *(om[1]) foo.zip
-unzip foo.zip -d foo/
+unzip -fo foo.zip -d foo/
 cd foo/
 grep -RIi $1 .
 }
@@ -102,3 +102,4 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 [ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
+export PATH="/usr/local/opt/libiconv/bin:$PATH"
