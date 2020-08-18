@@ -22,14 +22,8 @@ set mouse=a " resisted for a while but now this is pretty useful :)
 " coc
 set shortmess+=c
 set signcolumn=number
-" inoremap <silent><expr> <TAB>
-      " \ pumvisible() ? "\<C-n>" :
-      " \ <SID>check_back_space() ? "\<TAB>" :
-      " \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
-autocmd CursorHold * silent call CocActionAsync('highlight')
 
 set clipboard=unnamed " use system clipboard
 set laststatus=2 " leave status line on
@@ -44,9 +38,7 @@ set scrolloff=3 " number of lines to keep above and below the cursor
 set shell=/bin/zsh
 
 set rtp+=/usr/local/opt/fzf  " add FZF to runtime path
-" set rtp+=~/.vim/bundle/YouCompleteMe
 set rtp+=~/.vim/bundle/vim2hs
-" set rtp+=~/.vim/pack/coc/
 
 set makeprg=ghc
 " if working with other compiled languages can prefix autocmd Filetype haskell
@@ -56,8 +48,8 @@ nnoremap <F1> :make %<CR>
 nnoremap s :noh<CR>
 
 syntax enable
-set t_Co=256
-silent! colorscheme monokai " if you don't find it, I don't want to hear you whine about it
+set termguicolors
+silent! colorscheme material-monokai " if you don't find it, I don't want to hear you whine about it
 
 filetype plugin on
 
@@ -108,14 +100,12 @@ noremap <C-k> <C-w>k
 noremap <C-l> <C-w>l
 noremap <C-h> <C-w>h
 
-" remove trailing whitespaces
-command! FixWhitespace :%s/\s\+$//e
-
 " Open help in vertical right tab
 augroup vimrc_help
   autocmd!
   autocmd BufEnter *.txt if &buftype == 'help' | wincmd L | endif
 augroup END
+
 
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
 let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
@@ -169,6 +159,7 @@ let g:ale_lint_on_save = 1
 let g:ale_fix_on_save = 0
 let g:ale_set_loclist = 0
 let g:ale_set_quickfix = 1
+let g:ale_disable_lsp = 1
 let g:ale_fixers = {'python': ['autopep8', 'isort', 'yapf'], 'haskell': ['hlint']}
 let g:ale_linters = {'python': ['pylint'], 'haskell': ['hlint'], 'sh': ['shellcheck']}
 " let g:ale_open_list = 0
