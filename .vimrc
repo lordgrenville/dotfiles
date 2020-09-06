@@ -1,29 +1,27 @@
-set showcmd   "display incomplete commands
-set wildmenu  " visual command line completion
+set autoindent " copy indent from previous when starting new line
 set autoread " when a file changes outside vim, change it inside vim as well
 set autowrite " if a file changes on disk, reload it
-set autoindent " copy indent from previous when starting new line
 set cindent " smart newline autoindenting for languages
-set visualbell " enable visual bell in order to disable beeping
-set ruler
-set softtabstop=4
-set expandtab
-set number
 set cursorline
-set shiftwidth=4
+set expandtab
 set hidden "means hidden buffers are loaded into memory, so no need to save
-set splitright
-set splitbelow  "splits happen opposite to the way vim likes
-set nofoldenable   " i'll fold my code if i want to, thank you very much
-set nocompatible  " no need for vi compatibility in 2020 AD
-set ttyfast  " supposed to be faster?
 set mouse=a " resisted for a while but now this is pretty useful :)
+set nocompatible  " no need for vi compatibility in 2020 AD
+set nofoldenable   " i'll fold my code if i want to, thank you very much
+set number
+set ruler
+set shiftwidth=4
+set showcmd   "display incomplete commands
+set softtabstop=4
+set splitbelow  "splits happen opposite to the way vim likes
+set splitright
+set ttyfast  " supposed to be faster?
+set visualbell " enable visual bell in order to disable beeping
+set wildmenu  " visual command line completion
 
 " coc
 set shortmess+=c
 set signcolumn=number
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
 set clipboard=unnamed " use system clipboard
 set laststatus=2 " leave status line on
@@ -106,10 +104,10 @@ augroup vimrc_help
   autocmd BufEnter *.txt if &buftype == 'help' | wincmd L | endif
 augroup END
 
-
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
 let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
 let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
+let NERDTreeShowHidden=1
 let no_buffers_menu=1
 let python_highlight_all = 1
 
@@ -118,7 +116,6 @@ let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tagbar#enabled = 1
-let g:airline_skip_empty_sections = 1
 
 " airline stuff
 if !exists('g:airline_powerline_fonts')
@@ -159,7 +156,7 @@ let g:ale_lint_on_save = 1
 let g:ale_fix_on_save = 0
 let g:ale_set_loclist = 0
 let g:ale_set_quickfix = 1
-let g:ale_disable_lsp = 1
+let g:ale_disable_lsp = 0
 let g:ale_fixers = {'python': ['autopep8', 'isort', 'yapf'], 'haskell': ['hlint']}
 let g:ale_linters = {'python': ['pylint'], 'haskell': ['hlint'], 'sh': ['shellcheck']}
 " let g:ale_open_list = 0
@@ -173,7 +170,7 @@ silent! helptags ALL
 set guifont=FiraMonoForPowerline-Medium:h16
 
 " coc autocomplete behave like PyCharm (tab selects first option and closes)
-inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "<Tab>"
 
 " escape to exit terminal mode
 tnoremap <Esc> <C-\><C-n>:bd!<CR>
