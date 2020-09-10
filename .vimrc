@@ -86,6 +86,8 @@ nnoremap <Leader>cd :cd %:p:h <CR>
 nmap <C-m> gcc j
 "make vim-comment more like pycharm - note can't be nore since gcc is recursive
 
+nnoremap <leader>a [s\s
+
 " Buffer commands
 noremap <leader>b :bp<CR>
 noremap <leader>n :bn<CR>
@@ -115,9 +117,8 @@ let python_highlight_all = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tagbar#enabled = 1
-
-" airline stuff
+let g:airline#extensions#battery#enabled = 1
+let g:airline_powerline_fonts = 1
 if !exists('g:airline_powerline_fonts')
   let g:airline#extensions#tabline#left_sep = ' '
   let g:airline#extensions#tabline#left_alt_sep = '|'
@@ -170,6 +171,7 @@ silent! helptags ALL
 set guifont=FiraMonoForPowerline-Medium:h16
 
 " coc autocomplete behave like PyCharm (tab selects first option and closes)
+" syntax is pumvisible? (do if yes) : (do if no) - so in this case if no just stays as is
 inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "<Tab>"
 
 " escape to exit terminal mode
