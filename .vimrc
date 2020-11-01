@@ -43,7 +43,7 @@ set makeprg=ghc
 " since set autowrite no need to save before compiling - will save before make automatically
 nnoremap <F1> :make %<CR>
 " i do this a lot and s is totally useless
-nnoremap s :noh<CR>
+nnoremap <silent> s :noh<CR>
 
 syntax enable
 set termguicolors
@@ -83,8 +83,10 @@ nnoremap <silent> <F5> :NERDTreeToggle<CR>
 " Change the current working directory to the directory that the current file you are editing is in.
 nnoremap <Leader>cd :cd %:p:h <CR>
 
-nmap <C-m> gcc j
-"make vim-comment more like pycharm - note can't be nore since gcc is recursive
+nmap <C-_> gcc j
+" make vim-comment more like pycharm - note can't be nore since gcc is recursive
+" actually this is Ctrl-/ (similar to Pycharm's Cmd-/, but can't use command
+" in terminal) but for some weird reason must be like this https://stackoverflow.com/a/9051932/6220759
 
 nnoremap <leader>a [s\s
 
@@ -109,7 +111,11 @@ augroup END
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
 let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
 let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
+" show hidden files (like dotfiles)
 let NERDTreeShowHidden=1
+" yes if I open a file I'm done with you go away!
+let NERDTreeQuitOnOpen=1
+let NERDTreeHighlightCursorline=1
 let no_buffers_menu=1
 let python_highlight_all = 1
 
@@ -117,7 +123,7 @@ let python_highlight_all = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#battery#enabled = 1
+let g:airline#extensions#battery#enabled = 0
 let g:airline_powerline_fonts = 1
 if !exists('g:airline_powerline_fonts')
   let g:airline#extensions#tabline#left_sep = ' '
@@ -150,8 +156,8 @@ command! FZFMru call fzf#run({
 let g:ale_enabled = 1
 let g:ale_completion_enabled = 0
 let g:ale_lint_delay = 200 " millisecs
-" let g:ale_lint_on_text_changed = 'always' " never/insert/normal/always
-let g:ale_lint_on_enter = 1
+let g:ale_lint_on_text_changed = 'always' " never/insert/normal/always
+" let g:ale_lint_on_enter = 1
 let g:ale_lint_on_filetype_changed = 1
 let g:ale_lint_on_save = 1
 let g:ale_fix_on_save = 0
@@ -174,5 +180,19 @@ set guifont=FiraMonoForPowerline-Medium:h16
 " syntax is pumvisible? (do if yes) : (do if no) - so in this case if no just stays as is
 inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "<Tab>"
 
+call plug#begin('~/.vim/plugged')
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
+call plug#end()
+
+function! s:goyo_enter()
+  setlocal nolist nohls wrap linebreak nocursorline spell spelllang=en_gb noshowmatch iskeyword+=' nocindent tw=70
+  " cindent messes up indentation, tw of window size (80) is too long
+  source ~/.vim/misc/autocorrect.vim
+endfunction
+
 " escape to exit terminal mode
 tnoremap <Esc> <C-\><C-n>:bd!<CR>
+
+" used to go automatically into Goyo with md, but changed my mind
+" autocmd BufRead,BufNewFile *.md :Goyo
