@@ -1,0 +1,100 @@
+Prelude.words "ha ha ha"
+Prelude.map toUpper $ Prelude.words "ha ha ha"
+map toUpper $ Prelude.words "ha ha ha"
+map toUpper $ words "ha ha ha"
+:t toUpper
+import Data.Text
+:t toUpper 
+import Data.Char
+import Data.Text
+map upper $ words "ha ha ha"
+words "ha ha ha"
+(sum [1..10])^2
+(sum [1..10])^2]
+sum $ map (^2) [1..10]
+helper 154
+helper 153
+helper 9
+:load ArmstrongNumbers.hs 
+helper 9
+helper 0
+helper 314
+:load ArmstrongNumbers.hs 
+helper 314
+:load ArmstrongNumbers.hs 
+:load ArmstrongNumbers.hs 
+:load ArmstrongNumbers.hs 
+length $ toDigits 314
+length toDigits 314
+toDigits 314
+:load ArmstrongNumbers.hs 
+2^(3-1)
+2^64 - 1
+2^64
+2^63
+sumOfMultiples [3,5] 20
+:load SumOfMultiples
+sumOfMultiples [3,5] 20
+sumOfMultiples [3,5] 4
+sumOfMultiples [] 4
+sumOfMultiples [0] 4
+:load SumOfMultiples
+sumOfMultiples [0] 4
+sumOfMultiples [] 4
+:load SumOfMultiples
+map (*3) [1..(19`div`3)]
+map (*3) [1..(19/3)]
+map (*3) [1..19]
+take 3 (map (*2) [1,2,3,4])
+take 3 [1,2,3,4]
+sumOfMultiples [0] 4
+sumOfMultiples [] 4
+sumOfMultiples [3,5] 4
+concat $ map (helper 4) [3,5]
+sum $ nub $ concatMap (helper 4) [3,5]
+sum $ nub $ concat $ map (helper 4) [3,5]
+nub $ concat $ map (helper 4) [3,5]
+concat $ map (helper 4) [3,5]
+map (helper 4) [3,5]
+sumOfMultiples [3,5] 4
+sumOfMultiples [] 20
+sumOfMultiples [3,5] 20
+:load SumOfMultiples
+sum $ nub $ concat $ map (helper 19) []
+sum $ nub $ concat $ map (helper 19) [3,5]
+nub $ concat $ map (helper 19) [3,5]
+sum $ concat $ map (helper 19) [3,5]
+sum $ concat $ map (helper 20) [3,5]
+concat $ map (helper 20) [3,5]
+:t union
+:t a
+a = map (helper 20) [3,5]
+map (helper 20) [3,5]
+union map (helper 20) [3,5]
+union $ map (helper 20) [3,5]
+map (helper 20) [3,5]
+sumOfMultiples [3,5] 20
+sumOfMultiples 20 [3,5]
+:load SumOfMultiples.hs 
+:load SumOfMultiples.hs 
+foldr union [[3],[]]
+foldr1 union [[3],[]]
+:load SumOfMultiples.hs 
+foldr1 union []
+foldr1 union [[],[]]
+foldr1 union [[],[3]]
+foldr1 union [[3],[]]
+foldr1 union [[3],[4]]
+:load SumOfMultiples.hs 
+:t foldr1
+sumOfMultiples [] 20
+sumOfMultiples [3,5] 20
+sumOfMultiples 20 [3,5]
+:load SumOfMultiples.hs 
+sum $ foldr1 union (map (sumOfMultiples 20) [3,5])
+foldr1 union (map (sumOfMultiples 20) [3,5])
+foldr1 intersect  (map (sumOfMultiples 20) [3,5])
+:t foldr1
+intersect [3,4,5] [4,6,7]
+union [3,4,5] [4,6,7]
+:t curry

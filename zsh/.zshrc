@@ -11,9 +11,9 @@ SPACESHIP_PROMPT_ORDER=(
   dir           # Current directory section
   host          # Hostname section
   git           # Git section (git_branch + git_status)
-  hg            # Mercurial section (hg_branch  + hg_status)
+  # hg            # Mercurial section (hg_branch  + hg_status)
   package       # Package version
-  node          # Node.js section
+  # node          # Node.js section
   ruby          # Ruby section
   golang        # Go section
   rust          # Rust section
@@ -39,6 +39,8 @@ source $ZSH/oh-my-zsh.sh
 setopt histignorespace
 setopt hist_ignore_dups
 SAVEHIST=9999999
+unsetopt correct_all
+setopt correct  # don't correct argument names
 
 alias gs='git status'
 alias ll="exa --color auto --all --group-directories-first --long --group --header --modified --sort=name --git --time-style=long-iso --classify"
@@ -77,11 +79,14 @@ elif  [ "$1" = "josh-friedlander-kando" ]; then
 fi
 } 
 
-# quick search downloaded epub: unzip latest file in Downloads, and (recursive, case-insensitive) grep for first argument
+# quick search downloaded epub: unzip latest file in Downloads (if not already there)
+# unzip quietly, then (recursive, case-insensitive) grep for first argument
 book () {
 cd ~/Downloads
-cp *(om[1]) foo.zip
-unzip -fo foo.zip -d foo/
+if [ *(om[1]) != "foo" ]; then
+    cp *(om[1]) foo.zip
+fi
+unzip -qq -o foo.zip -d foo/
 cd foo/
 grep -RIi $1 .
 }
@@ -102,4 +107,41 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 [ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
-export PATH="/usr/local/opt/libiconv/bin:$PATH"
+
+# adding to PATH
+path+=/Applications/Racket\ v7.7/bin
+
+# something I found online I haven't yet used
+rga-fzf() {
+	RG_PREFIX="rga --files-with-matches"
+	local file
+	file="$(
+		FZF_DEFAULT_COMMAND="$RG_PREFIX '$1'" \
+			fzf --sort --preview="[[ ! -z {} ]] && rga --pretty --context 5 {q} {}" \
+				--phony -q "$1" \
+				--bind "change:reload:$RG_PREFIX {q}" \
+				--preview-window="70%:wrap"
+	)" &&
+	echo "opening $file" &&
+	xdg-open "$file"
+}
+
+# search joplin DB with rga
+# rg is fast grep, rga expands it to  sqlite files
+# case insensitive, include 3 lines after
+notes() {
+    rga -iA 3 $1 ~/.config/joplin/database.sqlite
+}
+
+# fuzzy cd!
+fcd() {
+  local dir
+  dir=$(find ${1:-.} -path '*/\.*' -prune \
+                  -o -type d -print 2> /dev/null | fzf +m) &&
+  cd "$dir"
+}
+
+# fuzzy ctrl-r!
+fh() {
+   print -s $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//')
+}
