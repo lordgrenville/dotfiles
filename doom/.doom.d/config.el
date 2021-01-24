@@ -32,9 +32,19 @@
 
 ; This determines the style of line numbers in effect. If set to `nil', line
 ; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+(setq display-line-numbers-type 'relative)
 
 (setq geiser-active-implementations '(mit))
+
+(setq inferior-lisp-program "/usr/local/bin/sbcl")
+
+(after! sly
+  (setq sly-lisp-implementations
+        '((sbcl ("/usr/local/bin/sbcl" "-L" "sbcl" "-Q" "run") :coding-system utf-8-unix))))
+
+(add-hook 'racket-mode-hook
+	  (lambda ()
+	    (define-key racket-mode-map (kbd "<f5>") 'racket-run)))
 
 (setq +ivy-buffer-preview t)
 

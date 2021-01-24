@@ -66,12 +66,21 @@ git credential-osxkeychain erase <<EOF
 host=github.com
 protocol=https
 EOF
+
+if [ "$1" = "lordgrenville" ]; then
+  password=$(<~/ghpwpers.txt)
+elif  [ "$1" = "josh-friedlander-kando" ]; then
+  password=$(<~/ghpw.txt)
+fi
+
+
 git credential-osxkeychain store <<EOF
 host=github.com
 protocol=https
 username=$1
-password=$(<~/ghpw.txt)
+password=$password
 EOF
+
 if [ "$1" = "lordgrenville" ]; then
   git config --global user.username "lordgrenville" && git config --global user.email "16547083+lordgrenville@users.noreply.github.com"
 elif  [ "$1" = "josh-friedlander-kando" ]; then
@@ -132,6 +141,12 @@ rga-fzf() {
 notes() {
     rga -iA 3 $1 ~/.config/joplin/database.sqlite
 }
+
+# search a directory with files you don't have permission to, ignore noise
+ffind() {
+    find . -name $1 2>&1 | grep -v "Permission denied" | grep -v "Operation not permitted"
+}
+
 
 # fuzzy cd!
 fcd() {

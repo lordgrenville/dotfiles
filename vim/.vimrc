@@ -8,7 +8,7 @@ set hidden "means hidden buffers are loaded into memory, so no need to save
 set mouse=a " resisted for a while but now this is pretty useful :)
 set nocompatible  " no need for vi compatibility in 2020 AD
 set nofoldenable   " i'll fold my code if i want to, thank you very much
-set number
+set number relativenumber  " current line number + rel for others
 set ruler
 set shiftwidth=4
 set showcmd   "display incomplete commands
@@ -49,7 +49,7 @@ syntax enable
 set termguicolors
 silent! colorscheme material-monokai " if you don't find it, I don't want to hear you whine about it
 
-filetype plugin on
+filetype plugin indent on
 
 " Display extra whitespace
 set list listchars=tab:»·,trail:·,nbsp:·
@@ -179,6 +179,13 @@ set guifont=FiraMonoForPowerline-Medium:h16
 " coc autocomplete behave like PyCharm (tab selects first option and closes)
 " syntax is pumvisible? (do if yes) : (do if no) - so in this case if no just stays as is
 inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "<Tab>"
+
+if $CONDA_PREFIX == ""
+  let s:current_python_path=$CONDA_PYTHON_EXE
+else
+  let s:current_python_path=$CONDA_PREFIX.'/bin/python'
+endif
+call coc#config('python', {'pythonPath': s:current_python_path})
 
 call plug#begin('~/.vim/plugged')
 Plug 'junegunn/goyo.vim'
