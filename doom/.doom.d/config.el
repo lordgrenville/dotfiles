@@ -30,6 +30,10 @@
 ; my `org-directory' has to be in Documents so that iCloud will back it up 🙄
 (setq org-directory "~/Documents/org/")
 
+; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
+(after! org (add-hook 'org-mode-hook
+	  (lambda () (setq fill-column 145))))
+
 ; This determines the style of line numbers in effect. If set to `nil', line
 ; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
@@ -52,10 +56,18 @@
 ; (matching the behaviour in Magit)
 (setq org-cycle-emulate-tab 'nil)
 
+(setq comint-scroll-to-bottom-on-output t)
+
 (defun add-pcomplete-to-capf ()
   (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
 
 (add-hook 'org-mode-hook #'add-pcomplete-to-capf)
+
+;; keybind to disable search highlighting (like :set noh)
+(map! :leader
+      :desc "SPC k kil buffer like in my Vim"
+      "k"
+      #'kill-buffer)
 
 ;; keybind to disable search highlighting (like :set noh)
 (map! :leader

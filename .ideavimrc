@@ -1,0 +1,12 @@
+set clipboard+=unnamed
+set surround
+set ignorecase
+set number relativenumber
+set incsearch
+set hlsearch
+set ignorecase " case insensitive search
+set smartcase " if using a capital, search becomes case sensitive
+nnoremap <silent> s :noh<CR>
+map Y ^y$
+nnoremap <tab> %
+vnoremap <tab> %

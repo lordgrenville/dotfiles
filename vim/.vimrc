@@ -44,6 +44,9 @@ set makeprg=ghc
 nnoremap <F1> :make %<CR>
 " i do this a lot and s is totally useless
 nnoremap <silent> s :noh<CR>
+" use tab to switch between parentheses!
+nnoremap <tab> %
+vnoremap <tab> %
 
 syntax enable
 set termguicolors
@@ -109,13 +112,15 @@ augroup vimrc_help
 augroup END
 
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
-let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
+let g:NERDTreeIgnore=['\.pyc$', '\.pyo$', '\.py\$class$', '\.obj$', '\.o$', '\.so$', '\.egg$', '^\.git$', '__pycache__', '\.DS_Store']
 let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 " show hidden files (like dotfiles)
 let NERDTreeShowHidden=1
 " yes if I open a file I'm done with you go away!
 let NERDTreeQuitOnOpen=1
 let NERDTreeHighlightCursorline=1
+" use mouse in NERDTree? oy vey...but just in case
+let NERDTreeMouseMode=2
 let no_buffers_menu=1
 let python_highlight_all = 1
 
@@ -163,9 +168,10 @@ let g:ale_lint_on_save = 1
 let g:ale_fix_on_save = 0
 let g:ale_set_loclist = 0
 let g:ale_set_quickfix = 1
-let g:ale_disable_lsp = 0
-let g:ale_fixers = {'python': ['autopep8', 'isort', 'yapf'], 'haskell': ['hlint']}
+let g:ale_disable_lsp = 1
+let g:ale_fixers = {'python': ['autopep8', 'isort', 'yapf'], 'haskell': ['hlint'], 'javascript': ['eslint']}
 let g:ale_linters = {'python': ['pylint'], 'haskell': ['hlint'], 'sh': ['shellcheck']}
+
 " let g:ale_open_list = 0
 
 " Load all plugins now.
@@ -175,6 +181,13 @@ packloadall
 " All messages and errors will be ignored.
 silent! helptags ALL
 set guifont=FiraMonoForPowerline-Medium:h16
+
+call plug#begin('~/.vim/plugged')
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
+Plug 'tmhedberg/SimpylFold'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+call plug#end()
 
 " coc autocomplete behave like PyCharm (tab selects first option and closes)
 " syntax is pumvisible? (do if yes) : (do if no) - so in this case if no just stays as is
@@ -186,11 +199,6 @@ else
   let s:current_python_path=$CONDA_PREFIX.'/bin/python'
 endif
 call coc#config('python', {'pythonPath': s:current_python_path})
-
-call plug#begin('~/.vim/plugged')
-Plug 'junegunn/goyo.vim'
-Plug 'junegunn/limelight.vim'
-call plug#end()
 
 function! s:goyo_enter()
   setlocal nolist nohls wrap linebreak nocursorline spell spelllang=en_gb noshowmatch iskeyword+=' nocindent tw=70

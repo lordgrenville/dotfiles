@@ -1,5 +1,6 @@
 setlocal nolist wrap wrapmargin=12 linebreak nocursorline columns=170
 setlocal spell spelllang=en_gb iskeyword+='
+setlocal display=lastline
 source ~/.vim/misc/autocorrect.vim
 nnoremap <Up> gk
 nnoremap <Down> gj

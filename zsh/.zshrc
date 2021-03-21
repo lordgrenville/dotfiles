@@ -32,7 +32,7 @@ SPACESHIP_PROMPT_ORDER=(
 )
 
 ENABLE_CORRECTION="true"
-plugins=(git wd)
+plugins=(git fzf)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -72,7 +72,6 @@ if [ "$1" = "lordgrenville" ]; then
 elif  [ "$1" = "josh-friedlander-kando" ]; then
   password=$(<~/ghpw.txt)
 fi
-
 
 git credential-osxkeychain store <<EOF
 host=github.com
@@ -160,3 +159,6 @@ fcd() {
 fh() {
    print -s $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//')
 }
+
+create_env() {conda create -y -n temp_env python=3.8 && cact temp_env}
+destroy_env() {cdeact && conda env remove --name temp_env}
