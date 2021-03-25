@@ -189,6 +189,7 @@ Plug 'tmhedberg/SimpylFold'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
+nmap <silent> gd <Plug>(coc-definition)
 " coc autocomplete behave like PyCharm (tab selects first option and closes)
 " syntax is pumvisible? (do if yes) : (do if no) - so in this case if no just stays as is
 inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "<Tab>"
@@ -211,3 +212,5 @@ tnoremap <Esc> <C-\><C-n>:bd!<CR>
 
 " used to go automatically into Goyo with md, but changed my mind
 " autocmd BufRead,BufNewFile *.md :Goyo
+
+execute pathogen#infect()
