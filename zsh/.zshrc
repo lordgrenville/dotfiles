@@ -44,9 +44,6 @@ setopt correct  # don't correct argument names
 
 alias gs='git status'
 alias ll="exa --color auto --all --group-directories-first --long --group --header --modified --sort=name --git --time-style=long-iso --classify"
-alias cact='conda activate'
-alias cdeact='conda deactivate'
-alias cswitch='conda deactivate && conda activate'
 
 bindkey "^[f" forward-word
 bindkey "^[b" backward-word
@@ -162,3 +159,8 @@ fh() {
 
 create_env() {conda create -y -n temp_env python=3.8 && cact temp_env}
 destroy_env() {cdeact && conda env remove --name temp_env}
+
+# use fzf to switch conda env!!!
+co() {
+  conda deactivate && conda activate $(ls ~/anaconda3/envs/ | fzf)
+}
