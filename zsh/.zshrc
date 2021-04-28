@@ -5,6 +5,8 @@ SPACESHIP_PROMPT_SEPARATE_LINE="false"
 SPACESHIP_CHAR_SYMBOL="🐼 "
 SPACESHIP_HOST_PREFIX="@"
 SPACESHIP_EXEC_TIME_SHOW="false"
+SPACESHIP_VENV_PREFIX='via ('
+SPACESHIP_VENV_SUFFIX=') '
 SPACESHIP_PROMPT_ORDER=(
   time          # Time stamps section
   user          # Username section
@@ -35,6 +37,9 @@ ENABLE_CORRECTION="true"
 plugins=(git fzf)
 
 source $ZSH/oh-my-zsh.sh
+
+# use vi as man pager
+export MANPAGER="vim -M +MANPAGER -"
 
 setopt histignorespace
 setopt hist_ignore_dups
@@ -157,8 +162,8 @@ fh() {
    print -s $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//')
 }
 
-create_env() {conda create -y -n temp_env python=3.8 && cact temp_env}
-destroy_env() {cdeact && conda env remove --name temp_env}
+create_env() {python3 -m venv temp_env/ && source temp_env/bin/activate}
+destroy_env() {deactivate && rm -rf temp_env/}
 
 # use fzf to switch conda env!!!
 co() {

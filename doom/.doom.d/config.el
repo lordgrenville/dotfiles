@@ -29,6 +29,7 @@
 
 ; my `org-directory' has to be in Documents so that iCloud will back it up 🙄
 (setq org-directory "~/Documents/org/")
+(setq org-roam-directory "~/Documents/org/roam/")
 
 ; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
 (after! org (add-hook 'org-mode-hook
@@ -110,7 +111,7 @@
        (let ((project-name (projectile-project-name)))
          (unless (string= "-" project-name)
            (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
-(conda-env-autoactivate-mode t)
+; (conda-env-autoactivate-mode t)
 
 ; ignore org-mode and others in flycheck (syntax checker)
 (setq flycheck-global-modes '(not gfm-mode forge-post-mode gitlab-ci-mode dockerfile-mode Org-mode org-mode))

@@ -17,4 +17,4 @@ nnoremap <buffer> e E
 nnoremap <buffer> b B
 nnoremap <buffer> b B
 
-au VimLeave <buffer> execute '%!fmt -999' | w
+" au VimLeave <buffer> execute '%!fmt -999' | w

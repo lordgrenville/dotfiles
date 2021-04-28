@@ -36,12 +36,13 @@ set scrolloff=3 " number of lines to keep above and below the cursor
 set shell=/bin/zsh
 
 set rtp+=/usr/local/opt/fzf  " add FZF to runtime path
-set rtp+=~/.vim/bundle/vim2hs
 
-set makeprg=ghc
+" " HASKELL
 " if working with other compiled languages can prefix autocmd Filetype haskell
 " since set autowrite no need to save before compiling - will save before make automatically
-nnoremap <F1> :make %<CR>
+" nnoremap <F1> :make %<CR>
+" set makeprg=ghc
+
 " i do this a lot and s is totally useless
 nnoremap <silent> s :noh<CR>
 " use tab to switch between parentheses!
@@ -68,11 +69,15 @@ endif
 
 map Y ^y$
 nnoremap gV `[v`]
+nnoremap j gj
+nnoremap k gk
 " explanations at https://dougblack.io/words/a-good-vimrc.html
 
 " pressing n in search  will center on the line it's found in.
 nnoremap n nzzzv
 nnoremap N Nzzzv
+
+nnoremap \s i<C-X><C-S>
 
 " from https://github.com/thoughtbot/dotfiles/blob/master/vimrc
 " Leader
@@ -86,18 +91,17 @@ nnoremap <silent> <F5> :NERDTreeToggle<CR>
 " Change the current working directory to the directory that the current file you are editing is in.
 nnoremap <Leader>cd :cd %:p:h <CR>
 
-nmap <C-_> gcc j
+" nmap <C-_> gcc j
 " make vim-comment more like pycharm - note can't be nore since gcc is recursive
 " actually this is Ctrl-/ (similar to Pycharm's Cmd-/, but can't use command
 " in terminal) but for some weird reason must be like this https://stackoverflow.com/a/9051932/6220759
-
-nnoremap <leader>a [s\s
 
 " Buffer commands
 noremap <leader>b :bp<CR>
 noremap <leader>n :bn<CR>
 noremap <leader>k :bd<CR>
-nnoremap <F6> <C-^>
+" open last closed buffer
+" nnoremap <F6> <C-^>
 
 " Simplify switching windows
 noremap <C-j> <C-w>j
@@ -128,7 +132,7 @@ let python_highlight_all = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#battery#enabled = 0
+let g:airline#extensions#battery#enabled = 1
 let g:airline_powerline_fonts = 1
 if !exists('g:airline_powerline_fonts')
   let g:airline#extensions#tabline#left_sep = ' '
@@ -169,8 +173,8 @@ let g:ale_fix_on_save = 0
 let g:ale_set_loclist = 0
 let g:ale_set_quickfix = 1
 let g:ale_disable_lsp = 1
-let g:ale_fixers = {'python': ['autopep8', 'isort', 'yapf'], 'haskell': ['hlint'], 'javascript': ['eslint']}
-let g:ale_linters = {'python': ['pylint'], 'haskell': ['hlint'], 'sh': ['shellcheck']}
+let g:ale_fixers = {'python': ['black', 'isort', 'autopep8'], 'haskell': ['hlint'], 'javascript': ['eslint']}
+let g:ale_linters = {'python': ['pylint'], 'haskell': ['hlint'], 'sh': ['shellcheck'], 'markdown': []}
 
 " let g:ale_open_list = 0
 
@@ -193,6 +197,8 @@ nmap <silent> gd <Plug>(coc-definition)
 " coc autocomplete behave like PyCharm (tab selects first option and closes)
 " syntax is pumvisible? (do if yes) : (do if no) - so in this case if no just stays as is
 inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "<Tab>"
+" the line below and above prevent Tab and CR from being literal when a pop-up menu is open
+inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
 
 if $CONDA_PREFIX == ""
   let s:current_python_path=$CONDA_PYTHON_EXE
