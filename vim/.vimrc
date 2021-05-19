@@ -18,6 +18,7 @@ set splitright
 set ttyfast  " supposed to be faster?
 set visualbell " enable visual bell in order to disable beeping
 set wildmenu  " visual command line completion
+set history=1000  " command line history
 
 " coc
 set shortmess+=c
@@ -185,6 +186,8 @@ packloadall
 " All messages and errors will be ignored.
 silent! helptags ALL
 set guifont=FiraMonoForPowerline-Medium:h16
+
+au BufRead,BufNewFile *.fish set filetype=fish
 
 call plug#begin('~/.vim/plugged')
 Plug 'junegunn/goyo.vim'
