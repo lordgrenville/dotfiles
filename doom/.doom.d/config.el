@@ -104,14 +104,15 @@
                           (eq buffer-file-coding-system 'utf-8)))))
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 
-(setq gnus-select-method '(nntp "news.eternal-september.org"))
-(setq gnus-read-active-file nil)
+;; (setq gnus-select-method '(nntp "news.eternal-september.org"))
+;; (setq gnus-read-active-file nil)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom")
 
+;; hide wrapping punctuation in org mode
 (setq org-hide-emphasis-markers t)
 
 (setq frame-title-format
@@ -128,6 +129,9 @@
 
 ; ignore org-mode and others in flycheck (syntax checker)
 (setq flycheck-global-modes '(not gfm-mode forge-post-mode gitlab-ci-mode dockerfile-mode Org-mode org-mode))
+
+; does this work? check next time you restart, otherwise use M-x ispell-change-dict
+(setq ispell-dictionary "en_GB")
 
 ; Here are some additional functions/macros that could help you configure Doom:
 ;
@@ -158,3 +162,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(evil-set-initial-state 'term-mode 'emacs)
+(evil-set-initial-state 'help-mode 'emacs)
+(evil-set-initial-state 'shell-mode 'emacs)
+(evil-set-initial-state 'dired-mode 'emacs)
+(evil-set-initial-state 'wdired-mode 'normal)
+(evil-set-initial-state 'git-commit-mode 'emacs)
+(evil-set-initial-state 'git-rebase-mode 'emacs)

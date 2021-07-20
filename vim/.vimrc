@@ -86,7 +86,7 @@ let mapleader = " "
 " FZFMru is a command (at the bottom) made by some mad genius to open most recently used files
 nnoremap <Leader><Leader> :FZFMru<CR>
 " in a map, <silent> = don't print the key sequence on the screen I DON'T CARE
-nnoremap <silent> <F2> :FZF ~/Documents/research<CR>
+" nnoremap <silent> <F2> :FZF ~/Documents/research<CR>
 " as in , most of my stuff is here, and it won't take a million years as it would to search ~/
 nnoremap <silent> <F5> :NERDTreeToggle<CR>
 " Change the current working directory to the directory that the current file you are editing is in.
@@ -133,7 +133,7 @@ let python_highlight_all = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#battery#enabled = 1
+let g:airline#extensions#battery#enabled = 0
 let g:airline_powerline_fonts = 1
 if !exists('g:airline_powerline_fonts')
   let g:airline#extensions#tabline#left_sep = ' '
@@ -194,6 +194,7 @@ Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'tmhedberg/SimpylFold'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'lervag/vimtex'
 call plug#end()
 
 nmap <silent> gd <Plug>(coc-definition)
