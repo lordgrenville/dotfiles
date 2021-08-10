@@ -38,7 +38,15 @@
 
 ; This determines the style of line numbers in effect. If set to `nil', line
 ; numbers are disabled. For relative line numbers, set this to `relative'.
+;; (setq display-line-numbers-type 'fixed)
 (setq display-line-numbers-type 'relative)
+
+;; display time, and don't show me the system load, which makes no sense to me
+(setq display-time-default-load-average 'nil)
+(display-time)
+
+; repetitive modeline diagnostics not needed
+(setq lsp-modeline-diagnostics-enable nil)
 
 (setq geiser-active-implementations '(mit))
 
@@ -76,10 +84,11 @@
 (add-hook 'org-mode-hook #'add-pcomplete-to-capf)
 
 ;; keybind to disable search highlighting (like :set noh)
-(map! :leader
-      :desc "SPC k kil buffer like in my Vim"
-      "k"
-      #'kill-buffer)
+;; ok I don't need this but keeping it here for reference
+;; (map! :leader
+;;       :desc "SPC k kil buffer like in my Vim"
+;;       "k"
+;;       #'kill-buffer)
 
 ;; keybind to disable search highlighting (like :set noh)
 (map! :leader
@@ -125,7 +134,8 @@
        (let ((project-name (projectile-project-name)))
          (unless (string= "-" project-name)
            (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
-; (conda-env-autoactivate-mode t)
+
+;; (conda-env-autoactivate-mode t)
 
 ; ignore org-mode and others in flycheck (syntax checker)
 (setq flycheck-global-modes '(not gfm-mode forge-post-mode gitlab-ci-mode dockerfile-mode Org-mode org-mode))

@@ -17,6 +17,7 @@ set splitbelow  "splits happen opposite to the way vim likes
 set splitright
 set ttyfast  " supposed to be faster?
 set visualbell " enable visual bell in order to disable beeping
+set wildmode=longest:full,full
 set wildmenu  " visual command line completion
 set history=1000  " command line history
 
