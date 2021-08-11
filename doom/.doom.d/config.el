@@ -41,6 +41,9 @@
 ;; (setq display-line-numbers-type 'fixed)
 (setq display-line-numbers-type 'relative)
 
+; pylsp formatter doesn't work, overrride it manually
+(setq-hook! 'python-mode-hook +format-with 'black)
+
 ;; display time, and don't show me the system load, which makes no sense to me
 (setq display-time-default-load-average 'nil)
 (display-time)
@@ -48,17 +51,17 @@
 ; repetitive modeline diagnostics not needed
 (setq lsp-modeline-diagnostics-enable nil)
 
-(setq geiser-active-implementations '(mit))
+;; (setq geiser-active-implementations '(mit))
 
-(setq inferior-lisp-program "/usr/local/bin/sbcl")
+;; (setq inferior-lisp-program "/usr/local/bin/sbcl")
 
-(after! sly
-  (setq sly-lisp-implementations
-        '((sbcl ("/usr/local/bin/sbcl" "-L" "sbcl" "-Q" "run") :coding-system utf-8-unix))))
+;; (after! sly
+;;   (setq sly-lisp-implementations
+;;         '((sbcl ("/usr/local/bin/sbcl" "-L" "sbcl" "-Q" "run") :coding-system utf-8-unix))))
 
-(add-hook 'racket-mode-hook
-	  (lambda ()
-	    (define-key racket-mode-map (kbd "<f5>") 'racket-run)))
+;; (add-hook 'racket-mode-hook
+;; 	  (lambda ()
+;; 	    (define-key racket-mode-map (kbd "<f5>") 'racket-run)))
 
 ;; (define-key evil-motion-state-map "]s" 'evil-next-flyspell-error)
 ;; (define-key evil-motion-state-map "[s" 'evil-prev-flyspell-error)
