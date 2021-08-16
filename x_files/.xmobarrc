@@ -1,9 +1,10 @@
-Config { font = "xft:DejaVu Sans Mono for Powerline:pixelsize=11"
+Config { font = "xft:Noto Mono:size=9:medium:antialias=true"
         , borderColor = "black"
         , border = TopB
-        , bgColor = "#002b36"
+        , bgColor = "#0C0C14"
         , fgColor = "#586e75"
         , allDesktops = True
+        , pickBroadest = False
         , position = TopW L 100
         , commands = [
                           Run Weather "LLBG" ["-t","<tempC>C","-L","18","-H","25","--normal","green","--high",
@@ -19,8 +20,12 @@ Config { font = "xft:DejaVu Sans Mono for Powerline:pixelsize=11"
                         , Run Com "uname" ["-s","-r"] "" 36000
                         , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
                         , Run StdinReader
+--Audacious music player
+                        , Run Com "/bin/bash" ["-c","if [ $(pidof audacious) ];then echo `audtool --current-song`;else echo -;fi"] "aud1" 10
+                        , Run Com "/bin/bash" ["-c","if [ $(pidof audacious) ];then echo `audtool --current-song-output-length`;else echo -;fi"] "aud2" 10
+                        , Run Com "/bin/bash" ["-c","if [ $(pidof audacious) ];then echo `audtool --current-song-length`;else echo -;fi"] "aud3" 10
                         ]
         , sepChar = "%"
         , alignSep = "}{"
-        , template = "%StdinReader% | %cpu% | %memory% * %swap% | %enp7s0% - %wlan0% | %myvolume% | %mybattery% }{<fc=#ee9a00>%date%</fc> | %uname% | %LLBG% "
+        , template = "%StdinReader% | %cpu% | %memory% * %swap% | %enp7s0% %wlan0% | %myvolume% | %mybattery% | %aud1% | %aud2% | %aud3% }{<fc=#ee9a00>%date%</fc> | %LLBG% "
         }
