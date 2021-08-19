@@ -21,6 +21,9 @@ set wildmode=longest:full,full
 set wildmenu  " visual command line completion
 set history=1000  " command line history
 
+" fix issue with arrow keys in fzf plugin terminal mode
+tnoremap <esc><esc> s
+
 " coc
 set shortmess+=c
 set signcolumn=number
