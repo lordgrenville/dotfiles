@@ -21,9 +21,6 @@ set wildmode=longest:full,full
 set wildmenu  " visual command line completion
 set history=1000  " command line history
 
-" fix issue with arrow keys in fzf plugin terminal mode
-tnoremap <esc><esc> s
-
 " coc
 set shortmess+=c
 set signcolumn=number
@@ -222,7 +219,8 @@ function! s:goyo_enter()
 endfunction
 
 " escape to exit terminal mode
-tnoremap <Esc> <C-\><C-n>:bd!<CR>
+" commented out cos it messes things up!
+" tnoremap <Esc> <C-\><C-n>:bd!<CR>
 
 " used to go automatically into Goyo with md, but changed my mind
 " autocmd BufRead,BufNewFile *.md :Goyo
