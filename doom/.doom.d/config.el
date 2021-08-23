@@ -7,7 +7,7 @@
 ; Some functionality uses this to identify you, e.g. GPG configuration, email
 ; clients, file templates and snippets.
 (setq user-full-name "Josh Friedlander"
-      user-mail-address "josh@kando.eco")
+      user-mail-address "joshuatfriedlander@gmail.com")
 
 ; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ; are the three important ones:
@@ -20,7 +20,7 @@
 ; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ; font string. You generally only need these two:
 
-(setq doom-font (font-spec :family "Fira Mono" :size 16)
+(setq doom-font (font-spec :family "Fira Mono for Powerline" :size 16)
       doom-variable-pitch-font (font-spec :family "ETBembo" :size 24))
 
 ; There are two ways to load a theme. Both assume the theme is installed and
@@ -30,11 +30,13 @@
 
 ; my `org-directory' has to be in Documents so that iCloud will back it up 🙄
 (setq org-directory "~/Documents/org/")
-(setq org-roam-directory "~/Documents/org/roam/")
+;; (setq org-roam-directory "~/Documents/org/roam/")
 
 ; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
 (after! org (add-hook 'org-mode-hook
 	  (lambda () (setq fill-column 145))))
+
+(add-hook 'org-mode-hook 'org-fragtog-mode)
 
 ; This determines the style of line numbers in effect. If set to `nil', line
 ; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -63,8 +65,9 @@
 ;; 	  (lambda ()
 ;; 	    (define-key racket-mode-map (kbd "<f5>") 'racket-run)))
 
-;; (define-key evil-motion-state-map "]s" 'evil-next-flyspell-error)
-;; (define-key evil-motion-state-map "[s" 'evil-prev-flyspell-error)
+(define-key evil-motion-state-map "]s" 'evil-next-flyspell-error)
+(define-key evil-motion-state-map "[s" 'evil-prev-flyspell-error)
+(define-key evil-motion-state-map "z=" 'flyspell-correct-word-before-point)
 
 ; (with-eval-after-load 'evil-maps
 ;   (define-key evil-motion-state-map (kbd "<f10>") 'evil-execute-in-emacs-state)
@@ -127,16 +130,16 @@
 ;; hide wrapping punctuation in org mode
 (setq org-hide-emphasis-markers t)
 
-(setq frame-title-format
-    '(""
-      (:eval
-       (if (s-contains-p org-roam-directory (or buffer-file-name ""))
-           (replace-regexp-in-string ".*/[0-9]*-?" "🢔 " buffer-file-name)
-         "%b"))
-      (:eval
-       (let ((project-name (projectile-project-name)))
-         (unless (string= "-" project-name)
-           (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
+;; (setq frame-title-format
+;;     '(""
+;;       (:eval
+;;        (if (buffer-file-name "")
+;;            (replace-regexp-in-string ".*/[0-9]*-?" "🢔 " buffer-file-name)
+;;          "%b"))
+;;       (:eval
+;;        (let ((project-name (projectile-project-name)))
+;;          (unless (string= "-" project-name)
+;;            (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
 
 ;; (conda-env-autoactivate-mode t)
 
@@ -159,7 +162,7 @@
 ; To get information about any of these functions/macros, move the cursor over
 ; the highlighted symbol at press 'K' (non-evil users must press 'C-c g k').
 ; This will open documentation for it, including demos of how they are used.
-;
+
 ; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ; they are implemented.
 (custom-set-variables
@@ -167,7 +170,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files '("/Users/joshfriedlander/org/kbase.org"))
+ '(org-agenda-files '("/josh/org/kbase.org"))
  '(package-selected-packages '(aggressive-indent)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

@@ -4,14 +4,14 @@ import XMonad.Layout.NoBorders
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Actions.CycleWS
 import XMonad.Util.EZConfig(additionalKeys)
-import XMonad.Config.Desktop
-import XMonad.Wallpaper
 import System.IO
+
+-- use names instead of keysyms for audio keys. on Arch you first need to cabal install --lib X11
+import Graphics.X11.ExtraTypes.XF86
 
 main = do
     xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
 
-    setRandomWallpaper ["$HOME/Pictures/desktop pics"]
 -- Command to launch the bar.
 myBar = "xmobar"
 
@@ -23,23 +23,37 @@ toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
 -- Main configuration, override the defaults to your liking.
 myConfig = def { terminal = "/usr/bin/urxvt"
-               ,layoutHook = noBorders Full
+               , startupHook = spawn "feh --no-fehbg --bg-fill '/josh/Pictures/hill.webp' '/josh/Pictures/trees.jpg'"
+               , layoutHook = noBorders Full
                , modMask = mod4Mask
                }
                                `additionalKeys`
                 [
-                -- ((mod4Mask , xK_Tab), nextMatch Backward (return True))
                 -- toggle through workspaces in order
-                  ((mod4Mask,               xK_Down),  nextWS)
-                , ((mod4Mask,               xK_Up),    prevWS)
+                  ((mod4Mask, xK_Down),  nextWS)
+                , ((mod4Mask, xK_Up),    prevWS)
                 -- switch focus between *screens*
                 -- (by default this is M-w,e,r...)
-                , ((mod4Mask,               xK_Right), nextScreen)
-                , ((mod4Mask,               xK_Left),  prevScreen)
+                , ((mod4Mask, xK_Right), nextScreen)
+                , ((mod4Mask, xK_Left),  prevScreen)
                 -- alt tab to toggle most recent two windows
-                , ((mod4Mask,               xK_Tab),     toggleWS)
-                -- , ((mod4Mask, xK_Tab), cycleRecentWS [xK_Alt_L] xK_Tab xK_grave)
-                , ((mod4Mask,               xK_p     ), spawn "dmenu_run")
+                , ((mod4Mask, xK_Tab),     toggleWS)
+                , ((mod4Mask, xK_p     ), spawn "dmenu_run")
                 -- alt-Space à la macOS Spotlight Cmd-Space
-                , ((mod1Mask,               xK_space     ), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font 'hack 10' -show combi -icon-theme 'Papirus' -show-icons")
+                -- requires rofi + drun (obvs), papirus-icon-theme
+                , ((mod1Mask, xK_space     ), spawn "rofi -combi-modi drun -theme solarized -font 'hack 10' -show combi -icon-theme 'Papirus' -show-icons")
+                -- special audio keys
+                ,((0        , xF86XK_AudioLowerVolume), spawn "amixer -q sset Master 1%-")
+                ,((0        , xF86XK_AudioRaiseVolume), spawn "amixer -q sset Master 1%+")
+                ,((0        , xF86XK_AudioMute), spawn "amixer set Master toggle")
+                ,((0        , xF86XK_AudioPlay), spawn "playerctl play-pause")
+                ,((0        , xF86XK_AudioPrev), spawn "playerctl previous")
+                ,((0        , xF86XK_AudioNext), spawn "playerctl next")
+                -- alternatively with keysyms
+                -- ,((0        , 0x1008FF11), spawn "amixer -q sset Master 1%-")
+                -- ,((0        , 0x1008FF12), spawn "amixer set Master toggle")
+                -- ,((0        , 0x1008FF13), spawn "amixer -q sset Master 1%+")
+                -- ,((0        , 0x1008FF14), spawn "playerctl play-pause")
+                -- ,((0        , 0x1008FF16), spawn "playerctl previous")
+                -- ,((0        , 0x1008FF17), spawn "playerctl next")
                 ]
