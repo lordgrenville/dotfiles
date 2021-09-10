@@ -191,15 +191,15 @@ set guifont=FiraMonoForPowerline-Medium:h16
 au BufRead,BufNewFile *.fish set filetype=fish
 
 call plug#begin('~/.vim/plugged')
-    Plug 'tpope/vim-commentary'
-    Plug 'preservim/nerdtree'
-    Plug 'junegunn/goyo.vim'
+    Plug 'dense-analysis/ale'
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    Plug 'junegunn/fzf.vim'
+    Plug 'junegunn/goyo.vim'
     Plug 'junegunn/limelight.vim'
-    Plug 'tmhedberg/SimpylFold'
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
     Plug 'lervag/vimtex'
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'preservim/nerdtree'
+    Plug 'tmhedberg/SimpylFold'
+    Plug 'tpope/vim-commentary'
 call plug#end()
 
 nmap <silent> gd <Plug>(coc-definition)
