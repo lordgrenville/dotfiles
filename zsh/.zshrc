@@ -1,53 +1,19 @@
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="spaceship"
-SPACESHIP_PROMPT_ADD_NEWLINE="false"
-SPACESHIP_PROMPT_SEPARATE_LINE="false"
-SPACESHIP_CHAR_SYMBOL="🐼 "
-SPACESHIP_HOST_PREFIX="@"
-SPACESHIP_EXEC_TIME_SHOW="false"
-SPACESHIP_VENV_PREFIX='via ('
-SPACESHIP_VENV_SUFFIX=') '
-SPACESHIP_PROMPT_ORDER=(
-  time          # Time stamps section
-  user          # Username section
-  dir           # Current directory section
-  host          # Hostname section
-  git           # Git section (git_branch + git_status)
-  # hg            # Mercurial section (hg_branch  + hg_status)
-  package       # Package version
-  # node          # Node.js section
-  ruby          # Ruby section
-  golang        # Go section
-  rust          # Rust section
-  haskell       # Haskell Stack section
-  aws           # Amazon Web Services section
-  venv          # virtualenv section
-  conda         # conda virtualenv section
-  pyenv         # Pyenv section
-  exec_time     # Execution time
-  line_sep      # Line break
-  battery       # Battery level and status
-  vi_mode       # Vi-mode indicator
-  jobs          # Background jobs indicator
-  exit_code     # Exit code section
-  char          # Prompt character
-)
-
-ENABLE_CORRECTION="true"
-plugins=(git fzf)
-
-source $ZSH/oh-my-zsh.sh
-
-# use vi as man pager
-export MANPAGER="vim -M +MANPAGER -"
-
 setopt histignorespace
 setopt hist_ignore_dups
 SAVEHIST=9999999
 unsetopt correct_all
 setopt correct  # don't correct argument names
+autoload -U select-word-style
+select-word-style bash
 
-alias gs='git status'
+setopt auto_cd
+DIRSTACKSIZE=20    
+setopt autopushd pushdsilent pushdtohome
+## Remove duplicate entries
+setopt pushdignoredups
+## This reverts the +/- operators.
+setopt pushdminus
+
 alias ll="exa --color auto --all --group-directories-first --long --group --header --modified --sort=name --git --time-style=long-iso --classify"
 
 bindkey "^[f" forward-word
@@ -71,7 +37,7 @@ EOF
 
 if [ "$1" = "lordgrenville" ]; then
   password=$(<~/ghpwpers.txt)
-elif  [ "$1" = "josh-friedlander-kando" ]; then
+elif  [ "$1" = "josh-medorion" ]; then
   password=$(<~/ghpw.txt)
 fi
 
@@ -84,8 +50,8 @@ EOF
 
 if [ "$1" = "lordgrenville" ]; then
   git config --global user.username "lordgrenville" && git config --global user.email "16547083+lordgrenville@users.noreply.github.com"
-elif  [ "$1" = "josh-friedlander-kando" ]; then
-  git config --global user.username "josh-friedlander-kando" && git config --global user.email "josh@kando.eco"
+elif  [ "$1" = "josh-medorion" ]; then
+  git config --global user.username "josh-medorion" && git config --global user.email "josh@medorion.com"
 fi
 } 
 
@@ -103,38 +69,20 @@ grep -RIi $1 .
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('$HOME/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+__conda_setup="$('/Users/josh/miniforge3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
 if [ $? -eq 0 ]; then
     eval "$__conda_setup"
 else
-    if [ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "$HOME/anaconda3/etc/profile.d/conda.sh"
+    if [ -f "/Users/josh/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/Users/josh/miniforge3/etc/profile.d/conda.sh"
     else
-        export PATH="$HOME/anaconda3/bin:$PATH"
+        export PATH="/Users/josh/miniforge3/bin:$PATH"
     fi
 fi
 unset __conda_setup
 # <<< conda initialize <<<
 
 [ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
-
-# adding to PATH
-path+=/Applications/Racket\ v7.7/bin
-
-# something I found online I haven't yet used
-rga-fzf() {
-	RG_PREFIX="rga --files-with-matches"
-	local file
-	file="$(
-		FZF_DEFAULT_COMMAND="$RG_PREFIX '$1'" \
-			fzf --sort --preview="[[ ! -z {} ]] && rga --pretty --context 5 {q} {}" \
-				--phony -q "$1" \
-				--bind "change:reload:$RG_PREFIX {q}" \
-				--preview-window="70%:wrap"
-	)" &&
-	echo "opening $file" &&
-	xdg-open "$file"
-}
 
 # search joplin DB with rga
 # rg is fast grep, rga expands it to  sqlite files
@@ -148,19 +96,7 @@ ffind() {
     find . -name $1 2>&1 | grep -v "Permission denied" | grep -v "Operation not permitted"
 }
 
-
-# fuzzy cd!
-fcd() {
-  local dir
-  dir=$(find ${1:-.} -path '*/\.*' -prune \
-                  -o -type d -print 2> /dev/null | fzf +m) &&
-  cd "$dir"
-}
-
-# fuzzy ctrl-r!
-fh() {
-   print -s $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//')
-}
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # create venv, silently update pip
 create_env() {python3 -m venv temp_env/; source temp_env/bin/activate}
@@ -172,3 +108,14 @@ destroy_env() {deactivate && rm -rf temp_env/}
 co() {
   conda deactivate && conda activate $(ls ~/anaconda3/envs/ | fzf)
 }
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+eval "$(starship init zsh)"
+
+# plugins
+source /opt/homebrew/share/zsh-abbr/zsh-abbr.zsh
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
