@@ -6,6 +6,9 @@ setopt correct  # don't correct argument names
 autoload -U select-word-style
 select-word-style bash
 
+# case-insensitive autocomplete if no match on case
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
+
 setopt auto_cd
 DIRSTACKSIZE=20    
 setopt autopushd pushdsilent pushdtohome
