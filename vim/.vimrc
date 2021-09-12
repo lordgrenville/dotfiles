@@ -200,6 +200,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'preservim/nerdtree'
     Plug 'tmhedberg/SimpylFold'
     Plug 'tpope/vim-commentary'
+    Plug 'vim-airline/vim-airline'
 call plug#end()
 
 nmap <silent> gd <Plug>(coc-definition)
