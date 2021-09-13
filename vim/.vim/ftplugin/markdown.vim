@@ -1,4 +1,4 @@
-setlocal nolist nohls wrap wrapmargin=12 linebreak nocursorline columns=170 foldcolumn=10 spell spelllang=en_gb noshowmatch iskeyword+=' nocindent
+setlocal nolist nohls wrap wrapmargin=12 linebreak nocursorline foldcolumn=10 spell spelllang=en_gb noshowmatch iskeyword+=' nocindent
 " if text is bigger than window show it, not a few lines of @ @ @
 setlocal display=lastline
 
