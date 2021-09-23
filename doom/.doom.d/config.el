@@ -53,28 +53,18 @@
 ; repetitive modeline diagnostics not needed
 (setq lsp-modeline-diagnostics-enable nil)
 
-;; (setq geiser-active-implementations '(mit))
+(map!
+     :n "]s"      #'evil-next-flyspell-error
+     :n "[s"      #'evil-prev-flyspell-error
+ )
 
-;; (setq inferior-lisp-program "/usr/local/bin/sbcl")
+(map!
+     :n  "z="     #'flyspell-correct-word-before-point
+ )
 
-;; (after! sly
-;;   (setq sly-lisp-implementations
-;;         '((sbcl ("/usr/local/bin/sbcl" "-L" "sbcl" "-Q" "run") :coding-system utf-8-unix))))
-
-;; (add-hook 'racket-mode-hook
-;; 	  (lambda ()
-;; 	    (define-key racket-mode-map (kbd "<f5>") 'racket-run)))
-
-(define-key evil-motion-state-map "]s" 'evil-next-flyspell-error)
-(define-key evil-motion-state-map "[s" 'evil-prev-flyspell-error)
-(define-key evil-motion-state-map "z=" 'flyspell-correct-word-before-point)
-
-; (with-eval-after-load 'evil-maps
-;   (define-key evil-motion-state-map (kbd "<f10>") 'evil-execute-in-emacs-state)
-;   (define-key evil-motion-state-map (kbd "\\") 'nil))
-
-; (define-key evil-motion-state-map "\s" 'ispell-word)
-
+; don't autolaunch spell-fu
+(remove-hook 'text-mode-hook #'spell-fu-mode)
+(add-hook 'text-mode-hook #'flyspell-mode)
 
 (setq +ivy-buffer-preview t)
 
