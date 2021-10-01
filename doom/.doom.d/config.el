@@ -1,90 +1,75 @@
 ;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-; Place your private configuration here! Remember, you do not need to run 'doom
-; sync' after modifying this file!
+(setq
+   user-full-name "Josh Friedlander"
+   user-mail-address "joshuatfriedlander@gmail.com"
+   doom-font (font-spec :family "Fira Mono for Powerline" :size 16)
+   ;; doom-variable-pitch-font (font-spec :family "ETBembo" :size 24)
+   ;; doom-variable-pitch-font (font-spec :family "Vollkorn")
+   ;; doom-variable-pitch-font (font-spec :family "Noto Sans" :size 19)
+   doom-theme 'doom-snazzy
+   ;; doom-theme 'doom-vibrant
+   org-directory "~/Dropbox/org/"
+   projectile-project-search-path '("~/Documents/")
+; This determines the style of line numbers in effect. If set to `nil', line
+; numbers are disabled. For relative line numbers, set this to `relative'.
+   display-line-numbers-type 'relative
+   org-startup-folded 'overview
+; repetitive modeline diagnostics not needed
+   lsp-modeline-diagnostics-enable nil
+;; display time, and don't show me the system load, which makes no sense to me
+   display-time-default-load-average 'nil
+   +ivy-buffer-preview t
+; in org-mode, TAB key cycles headings even inside text block, rather than emulating real tab
+; (matching the behaviour in Magit)
+   org-cycle-emulate-tab 'nil
+   comint-scroll-to-bottom-on-output t
+   ob-mermaid-cli-path "/usr/local/bin/mmdc"
+   doom-fallback-buffer-name "► Doom"
+   +doom-dashboard-name "► Doom"
+;; hide wrapping punctuation in org mode
+   org-hide-emphasis-markers t
+; ignore org-mode and others in flycheck (syntax checker)
+   flycheck-global-modes '(not gfm-mode forge-post-mode gitlab-ci-mode dockerfile-mode Org-mode org-mode)
+   conda-anaconda-home "~/miniforge3/"
+; does this work? if not use M-x ispell-change-dict
+   ispell-dictionary "en_GB"
+)
 
+(display-time)
 
-; Some functionality uses this to identify you, e.g. GPG configuration, email
-; clients, file templates and snippets.
-(setq user-full-name "Josh Friedlander"
-      user-mail-address "joshuatfriedlander@gmail.com")
-
-; Doom exposes five (optional) variables for controlling fonts in Doom. Here
-; are the three important ones:
-;
-; + `doom-font'
-; + `doom-variable-pitch-font'
-; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;   presentations or streaming.
-;
-; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
-; font string. You generally only need these two:
-
-(setq doom-font (font-spec :family "Fira Mono for Powerline" :size 16)
-      doom-variable-pitch-font (font-spec :family "ETBembo" :size 24))
-
-; There are two ways to load a theme. Both assume the theme is installed and
-; available. You can either set `doom-theme' or manually load a theme with the
-; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
-
-; my `org-directory' has to be in Documents so that iCloud will back it up 🙄
-(setq org-directory "~/Documents/org/")
-;; (setq org-roam-directory "~/Documents/org/roam/")
+(with-eval-after-load 'doom-themes
+  (doom-themes-treemacs-config))
 
 ; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
 (after! org (add-hook 'org-mode-hook
-	  (lambda () (setq fill-column 145))))
+                      (lambda () (setq fill-column 145))))
 
 (add-hook 'org-mode-hook 'org-fragtog-mode)
-
-; This determines the style of line numbers in effect. If set to `nil', line
-; numbers are disabled. For relative line numbers, set this to `relative'.
-;; (setq display-line-numbers-type 'fixed)
-(setq display-line-numbers-type 'relative)
-
-; pylsp formatter doesn't work, overrride it manually
-(setq-hook! 'python-mode-hook +format-with 'black)
-
-;; display time, and don't show me the system load, which makes no sense to me
-(setq display-time-default-load-average 'nil)
-(display-time)
-
-; repetitive modeline diagnostics not needed
-(setq lsp-modeline-diagnostics-enable nil)
-
-(map!
-     :n "]s"      #'evil-next-flyspell-error
-     :n "[s"      #'evil-prev-flyspell-error
- )
-
-(map!
-     :n  "z="     #'flyspell-correct-word-before-point
- )
-
+;
 ; don't autolaunch spell-fu
 (remove-hook 'text-mode-hook #'spell-fu-mode)
 (add-hook 'text-mode-hook #'flyspell-mode)
 
-(setq +ivy-buffer-preview t)
+; pylsp formatter doesn't work, overrride it manually
+(setq-hook! 'python-mode-hook +format-with 'black)
 
-; in org-mode, TAB key cycles headings even inside text block, rather than emulating real tab
-; (matching the behaviour in Magit)
-(setq org-cycle-emulate-tab 'nil)
-
-(setq comint-scroll-to-bottom-on-output t)
+; in doom instead of define-key you have a convenience macro map!
+; you can prepend :leader, or :en for emacs, normal mode etc
+; more at :h map!
+(map!
+   :n "]s"   #'evil-next-flyspell-error
+   :n "[s"   #'evil-prev-flyspell-error
+ )
+(map!
+ (:after evil
+   :n "z="   #'flyspell-correct-word-before-point)
+ )
 
 (defun add-pcomplete-to-capf ()
   (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
 
 (add-hook 'org-mode-hook #'add-pcomplete-to-capf)
-
-;; keybind to disable search highlighting (like :set noh)
-;; ok I don't need this but keeping it here for reference
-;; (map! :leader
-;;       :desc "SPC k kil buffer like in my Vim"
-;;       "k"
-;;       #'kill-buffer)
 
 ;; keybind to disable search highlighting (like :set noh)
 (map! :leader
@@ -109,35 +94,16 @@
                           (eq buffer-file-coding-system 'utf-8)))))
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 
-;; (setq gnus-select-method '(nntp "news.eternal-september.org"))
-;; (setq gnus-read-active-file nil)
-
 (defalias 'yes-or-no-p 'y-or-n-p)
+(add-hook 'python-mode-hook 'anaconda-mode)
 
-(setq doom-fallback-buffer-name "► Doom"
-      +doom-dashboard-name "► Doom")
-
-;; hide wrapping punctuation in org mode
-(setq org-hide-emphasis-markers t)
-
-;; (setq frame-title-format
-;;     '(""
-;;       (:eval
-;;        (if (buffer-file-name "")
-;;            (replace-regexp-in-string ".*/[0-9]*-?" "🢔 " buffer-file-name)
-;;          "%b"))
-;;       (:eval
-;;        (let ((project-name (projectile-project-name)))
-;;          (unless (string= "-" project-name)
-;;            (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
-
-;; (conda-env-autoactivate-mode t)
-
-; ignore org-mode and others in flycheck (syntax checker)
-(setq flycheck-global-modes '(not gfm-mode forge-post-mode gitlab-ci-mode dockerfile-mode Org-mode org-mode))
-
-; does this work? check next time you restart, otherwise use M-x ispell-change-dict
-(setq ispell-dictionary "en_GB")
+(evil-set-initial-state 'term-mode 'emacs)
+(evil-set-initial-state 'help-mode 'emacs)
+(evil-set-initial-state 'shell-mode 'emacs)
+(evil-set-initial-state 'dired-mode 'emacs)
+(evil-set-initial-state 'wdired-mode 'normal)
+(evil-set-initial-state 'git-commit-mode 'emacs)
+(evil-set-initial-state 'git-rebase-mode 'emacs)
 
 ; Here are some additional functions/macros that could help you configure Doom:
 ;
@@ -168,11 +134,3 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-(evil-set-initial-state 'term-mode 'emacs)
-(evil-set-initial-state 'help-mode 'emacs)
-(evil-set-initial-state 'shell-mode 'emacs)
-(evil-set-initial-state 'dired-mode 'emacs)
-(evil-set-initial-state 'wdired-mode 'normal)
-(evil-set-initial-state 'git-commit-mode 'emacs)
-(evil-set-initial-state 'git-rebase-mode 'emacs)
