@@ -34,10 +34,11 @@ set incsearch " jump to closest instance during search
 set ignorecase " case insensitive search
 set smartcase " if using a capital, search becomes case sensitive
 set scrolloff=3 " number of lines to keep above and below the cursor
+set t_Co=256
 
 set shell=/bin/zsh
-
 set rtp+=/usr/local/opt/fzf  " add FZF to runtime path
+set rtp+=$HOME/miniforge3/envs/myenv/lib/python3.8/site-packages/powerline/bindings/vim/
 
 " " HASKELL
 " if working with other compiled languages can prefix autocmd Filetype haskell
@@ -53,7 +54,8 @@ vnoremap <tab> %
 
 syntax enable
 set termguicolors
-silent! colorscheme material-monokai " if you don't find it, I don't want to hear you whine about it
+" silent! colorscheme material-monokai " if you don't find it, I don't want to hear you whine about it
+silent! colorscheme snazzy
 
 filetype plugin indent on
 
@@ -130,40 +132,6 @@ let NERDTreeMouseMode=2
 let no_buffers_menu=1
 let python_highlight_all = 1
 
-" vim-airline
-let g:airline#extensions#branch#enabled = 1
-let g:airline#extensions#ale#enabled = 1
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#battery#enabled = 0
-let g:airline_powerline_fonts = 1
-if !exists('g:airline_powerline_fonts')
-  let g:airline#extensions#tabline#left_sep = ' '
-  let g:airline#extensions#tabline#left_alt_sep = '|'
-  let g:airline_left_sep          = '▶'
-  let g:airline_left_alt_sep      = '»'
-  let g:airline_right_sep         = '◀'
-  let g:airline_right_alt_sep     = '«'
-  let g:airline#extensions#branch#prefix     = '⤴' "➔, ➥, ⎇
-  let g:airline#extensions#readonly#symbol   = '⊘'
-  let g:airline#extensions#linecolumn#prefix = '¶'
-  let g:airline#extensions#paste#symbol      = 'ρ'
-else
-  let g:airline#extensions#tabline#left_sep = ''
-  let g:airline#extensions#tabline#left_alt_sep = ''
-
-  " powerline symbols
-  let g:airline_left_sep = ''
-  let g:airline_left_alt_sep = ''
-  let g:airline_right_sep = ''
-  let g:airline_right_alt_sep = ''
-endif
-
-command! FZFMru call fzf#run({
-\  'source':  v:oldfiles,
-\  'sink':    'e',
-\  'options': '-m -x +s',
-\  'down':    '40%'})
-
 let g:ale_enabled = 1
 let g:ale_completion_enabled = 0
 let g:ale_lint_delay = 200 " millisecs
@@ -180,17 +148,20 @@ let g:ale_linters = {'python': ['pylint'], 'haskell': ['hlint'], 'sh': ['shellch
 
 " let g:ale_open_list = 0
 
+" all this relates to Vim native packages, currently using junegunn alternative
 " Load all plugins now.
 " Plugins need to be added to runtimepath before helptags can be generated.
-packloadall
+" packloadall
 " Load all of the helptags now, after plugins have been loaded.
 " All messages and errors will be ignored.
-silent! helptags ALL
-set guifont=FiraMonoForPowerline-Medium:h16
+" silent! helptags ALL
+"
+" set guifont=FiraMonoForPowerline-Medium:h16
 
 au BufRead,BufNewFile *.fish set filetype=fish
 
 call plug#begin('~/.vim/plugged')
+    Plug 'connorholyday/vim-snazzy'
     Plug 'dense-analysis/ale'
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/goyo.vim'
@@ -200,7 +171,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'preservim/nerdtree'
     Plug 'tmhedberg/SimpylFold'
     Plug 'tpope/vim-commentary'
-    Plug 'vim-airline/vim-airline'
+    Plug 'tpope/vim-surround'
 call plug#end()
 
 nmap <silent> gd <Plug>(coc-definition)
@@ -209,6 +180,12 @@ nmap <silent> gd <Plug>(coc-definition)
 inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "<Tab>"
 " the line below and above prevent Tab and CR from being literal when a pop-up menu is open
 inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
+
+command! FZFMru call fzf#run({
+\  'source':  v:oldfiles,
+\  'sink':    'e',
+\  'options': '-m -x +s',
+\  'down':    '40%'})
 
 if $CONDA_PREFIX == ""
   let s:current_python_path=$CONDA_PYTHON_EXE
@@ -229,5 +206,3 @@ endfunction
 
 " used to go automatically into Goyo with md, but changed my mind
 " autocmd BufRead,BufNewFile *.md :Goyo
-
-execute pathogen#infect()
