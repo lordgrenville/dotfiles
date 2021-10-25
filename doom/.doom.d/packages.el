@@ -4,5 +4,6 @@
 (package! org-fragtog)
 (package! ob-mermaid)
 (package! olivetti)
-(package! vterm)
+(package! auto-dim-other-buffers)
 (package! dired+ :recipe (:host github :repo "adamroyjones/dired-plus"))
+(package! doct :recipe (:host github :repo "progfolio/doct"))

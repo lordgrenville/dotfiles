@@ -1,19 +1,21 @@
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000000
+SAVEHIST=10000000
+setopt SHARE_HISTORY             # Share history between all sessions.
+setopt HIST_IGNORE_DUPS          # Don't record an entry that was just recorded again.
+setopt HIST_FIND_NO_DUPS         # Do not display a line previously found.
+setopt HIST_IGNORE_SPACE         # Don't record an entry starting with a space.
+setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history file.
+setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
+setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
+setopt NO_BEEP                   # Don't beep
+
 unsetopt correct_all
 setopt correct  # don't correct argument names
 autoload -U select-word-style
 select-word-style bash
-
-# history options, mostly from OMZ
-setopt extended_history       # record timestamp of command in HISTFILE
-setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
-setopt hist_ignore_dups       # ignore duplicated commands history list
-setopt hist_ignore_space      # ignore commands that start with space
-setopt hist_verify            # show command with history expansion to user before running it
-setopt share_history          # share command history data
-SAVEHIST=9999999
-export HISTFILE=~/.zsh_history
-
 # case-insensitive autocomplete if no match on case
+autoload -Uz compinit && compinit
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 
 setopt auto_cd
@@ -33,6 +35,9 @@ bindkey \^U backward-kill-line
 
 export LC_ALL=en_US.UTF-8
 export VIRTUAL_ENV_DISABLE_PROMPT=0
+
+# use cd~wo<TAB> to get to work folder
+export work=/Users/josh/Documents/research
 
 # the below is a function. functions are defined either by the word function, or by the syntax foo ()
 # it calls git credential-osxkeychain and begins a HERE DOCUMENT, a way to put interactive content into a shell
@@ -92,8 +97,6 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-[ -f "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env" ] && source "${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/env"
-
 # search joplin DB with rga
 # rg is fast grep, rga expands it to  sqlite files
 # case insensitive, include 3 lines after
@@ -119,9 +122,13 @@ co() {
   conda deactivate && conda activate $(ls ~/anaconda3/envs/ | fzf)
 }
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# Add default node to path
+export PATH=~/.nvm/versions/node/v15.14.0/bin:$PATH
+
+# Load NVM
+export NVM_DIR=~/.nvm
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 eval "$(starship init zsh)"
 

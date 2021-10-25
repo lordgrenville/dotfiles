@@ -5,9 +5,10 @@
    user-mail-address "joshuatfriedlander@gmail.com"
    ;; doom-font (font-spec :family "Fira Mono for Powerline" :size 16)
    doom-font (font-spec :family "Fira Mono for Powerline" :size 16 :weight 'light)
-   doom-variable-pitch-font (font-spec :family "Noto Serif" :size 13)
-   doom-theme 'doom-snazzy
-   doom-theme-treemacs-theme "doom-atom"
+   doom-variable-pitch-font (font-spec :family "Noto Sans" :size 13)
+   doom-theme 'doom-dracula
+   ;; doom-theme-treemacs-theme "doom-atom"
+   doom-theme-treemacs-theme "doom-colors"
    org-directory "~/Dropbox/org/"
    projectile-project-search-path '("~/Documents/")
 ; This determines the style of line numbers in effect. If set to `nil', line
@@ -31,16 +32,15 @@
    conda-anaconda-home "~/miniforge3/"
 ; does this work? if not use M-x ispell-change-dict
    ispell-dictionary "en_GB"
-   ;; confirm-kill-emacs nil
+   ispell-program-name "aspell"
+   ispell-extra-args '("--sug-mode=ultra" "--run-together")
+   confirm-kill-emacs nil
+   org-todo-keywords '((sequence "TODO" "DONE"))
+   ; for mac with external keyboard: https://github.com/hlissner/doom-emacs/issues/3952#issuecomment-716608614
+   ns-right-option-modifier 'left
 )
 
 (display-time)
-
-; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
-(after! org
-        (setq org-startup-folded t)
-        (add-hook 'org-mode-hook
-                (lambda () (setq fill-column 145))))
 
 ; in doom instead of define-key you have a convenience macro map!
 ; you can prepend :leader, or :en for emacs, normal mode etc
@@ -55,33 +55,59 @@
    :n "z="   #'flyspell-correct-word-before-point)
  )
 
-(defun add-pcomplete-to-capf ()
-  (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
-
-(add-hook! 'org-mode-hook #'add-pcomplete-to-capf org-fragtog-mode)
-(setq ispell-program-name "aspell"
-      ispell-extra-args '("--sug-mode=ultra"
-                          "--run-together"))
-
-(add-hook! python-mode (conda-env-activate "myenv"))
-; pylsp formatter doesn't work, overrride it manually
-(setq-hook! 'python-mode-hook +format-with 'black)
-
-; don't autolaunch spell-fu
-(remove-hook 'text-mode-hook #'spell-fu-mode)
-(add-hook 'text-mode-hook #'flyspell-mode)
-
 ;; keybind to disable search highlighting (like :set noh)
 (map! :leader
       :desc "Clear search highlight"
       "s c"
       #'evil-ex-nohighlight)
 
-(evil-set-initial-state 'term-mode 'emacs)
-(evil-set-initial-state 'help-mode 'emacs)
-(evil-set-initial-state 'shell-mode 'emacs)
-(evil-set-initial-state 'dired-mode 'emacs)
-(evil-set-initial-state 'wdired-mode 'normal)
+(after! org
+  (setq org-startup-folded t)
+  (map! :localleader
+        :map org-mode-map
+        (:desc "Insert source code block" "i" 'org-insert-structure-template))
+  (map!
+   (
+    :n "<down>"   #'evil-next-visual-line
+    :n "<up>"   #'evil-previous-visual-line
+    )
+   ))
+
+(defun add-pcomplete-to-capf ()
+  (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+
+(add-hook! 'org-mode-hook #'add-pcomplete-to-capf 'org-fragtog-mode)
+
+(define-key global-map (kbd "C-c x")
+  (lambda () (interactive) (org-capture nil "t")))
+
+; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
+;
+(setq-hook! '(text-mode-hook) fill-column 145)
+
+;; (after! treemacs
+;;   (setq evil-treemacs-state-cursor nil
+;;         treemacs-show-cursor nil
+;;         treemacs-width 30))
+
+(add-hook! python-mode (conda-env-activate "myenv"))
+; pylsp formatter doesn't work, overrride it manually
+(setq-hook! 'python-mode-hook
+  +format-with 'black
+  lsp-pylsp-plugins-pydocstyle-enabled nil
+  lsp-pylsp-plugins-flake8-config "/Users/josh/.flake8"
+  )
+
+; don't autolaunch spell-fu
+(remove-hook 'text-mode-hook #'spell-fu-mode)
+(add-hook 'text-mode-hook #'flyspell-mode)
+
+;; (evil-set-initial-state 'term-mode 'emacs)
+(evil-set-initial-state 'vterm-mode 'emacs)
+;; (evil-set-initial-state 'help-mode 'emacs)
+;; (evil-set-initial-state 'shell-mode 'emacs)
+;; (evil-set-initial-state 'dired-mode 'emacs)
+;; (evil-set-initial-state 'wdired-mode 'normal)
 (evil-set-initial-state 'git-commit-mode 'emacs)
 (evil-set-initial-state 'git-rebase-mode 'emacs)
 
@@ -104,6 +130,95 @@
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
+
+
+
+(after! org-capture
+
+  (defun +doct-icon-declaration-to-icon (declaration)
+    "Convert :icon declaration to icon"
+    (let ((name (pop declaration))
+          (set  (intern (concat "all-the-icons-" (plist-get declaration :set))))
+          (face (intern (concat "all-the-icons-" (plist-get declaration :color))))
+          (v-adjust (or (plist-get declaration :v-adjust) 0.01)))
+      (apply set `(,name :face ,face :v-adjust ,v-adjust))))
+
+  (defun +doct-iconify-capture-templates (groups)
+    "Add declaration's :icon to each template group in GROUPS."
+    (let ((templates (doct-flatten-lists-in groups)))
+      (setq doct-templates (mapcar (lambda (template)
+                                     (when-let* ((props (nthcdr (if (= (length template) 4) 2 5) template))
+                                                 (spec (plist-get (plist-get props :doct) :icon)))
+                                       (setf (nth 1 template) (concat (+doct-icon-declaration-to-icon spec)
+                                                                      "\t"
+                                                                      (nth 1 template))))
+                                     template)
+                                   templates))))
+
+  (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
+
+  (defun set-org-capture-template ()
+    (setq org-capture-templates
+          (doct `(("Personal todo" :keys "t"
+                   :icon ("checklist" :set "octicon" :color "green")
+                   :file +org-capture-todo-file
+                   :prepend t
+                   :headline "Inbox"
+                   :type entry
+                   :template ("* TODO %?"
+                              "%i"))
+                  ("Personal note" :keys "n"
+                   :icon ("sticky-note-o" :set "faicon" :color "green")
+                   :file +org-capture-todo-file
+                   :prepend t
+                   :headline "Inbox"
+                   :type entry
+                   :template ("* %?"
+                              "%i %a"))
+                  ("Tasks" :keys "k"
+                   :icon ("inbox" :set "octicon" :color "yellow")
+                   :file +org-capture-todo-file
+                   :prepend t
+                   :headline "Tasks"
+                   :type entry
+                   :template ("* TODO %? %^G%{extra}"
+                              "%i %a")
+                   :children (("General Task" :keys "k"
+                               :icon ("inbox" :set "octicon" :color "yellow")
+                               :extra "")
+                              ("Task with deadline" :keys "d"
+                               :icon ("timer" :set "material" :color "orange" :v-adjust -0.1)
+                               :extra "\nDEADLINE: %^{Deadline:}t")
+                              ("Scheduled Task" :keys "s"
+                               :icon ("calendar" :set "octicon" :color "orange")
+                               :extra "\nSCHEDULED: %^{Start time:}t")))
+                  ))))
+  (set-org-capture-template)
+  (unless (display-graphic-p)
+    (add-hook 'server-after-make-frame-hook
+              (defun org-capture-reinitialise-hook ()
+                (when (display-graphic-p)
+                  (set-org-capture-templates)
+                  (remove-hook 'server-after-make-frame-hook
+                               #'org-capture-reinitialise-hook))))))
+
+(defun org-capture-select-template-prettier (&optional keys)
+  "Select a capture template, in a prettier way than default
+Lisp programs can force the template by setting KEYS to a string."
+  (let ((org-capture-templates
+         (or (org-contextualize-keys
+              (org-capture-upgrade-templates org-capture-templates)
+              org-capture-templates-contexts)
+             '(("t" "Task" entry (file+headline "" "Tasks")
+                "* TODO %?\n  %u\n  %a")))))
+    (if keys
+        (or (assoc keys org-capture-templates)
+            (error "No capture template referred to by \"%s\" keys" keys))
+      (org-mks org-capture-templates
+               "Select a capture template\n━━━━━━━━━━━━━━━━━━━━━━━━━"
+               "Template key: "
+               `(("q" ,(concat (all-the-icons-octicon "stop" :face 'all-the-icons-red :v-adjust 0.01) "\tAbort")))))))
+(advice-add 'org-capture-select-template :override #'org-capture-select-template-prettier)
 
 ; Here are some additional functions/macros that could help you configure Doom:
 ;
