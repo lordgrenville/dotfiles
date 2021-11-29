@@ -2,7 +2,7 @@ set autoindent " copy indent from previous when starting new line
 set autoread " when a file changes outside vim, change it inside vim as well
 set autowrite " if a file changes on disk, reload it
 set cindent " smart newline autoindenting for languages
-set cursorline
+" set cursorline
 set expandtab
 set hidden "means hidden buffers are loaded into memory, so no need to save
 set mouse=a " resisted for a while but now this is pretty useful :)
@@ -22,8 +22,8 @@ set wildmenu  " visual command line completion
 set history=1000  " command line history
 
 " coc
-set shortmess+=c
-set signcolumn=number
+" set shortmess+=c
+" set signcolumn=number
 
 set clipboard=unnamed " use system clipboard
 set laststatus=2 " leave status line on
@@ -38,7 +38,8 @@ set t_Co=256
 
 set shell=/bin/zsh
 set rtp+=/usr/local/opt/fzf  " add FZF to runtime path
-set rtp+=$HOME/miniforge3/envs/myenv/lib/python3.8/site-packages/powerline/bindings/vim/
+" I like powerline but it slows down startup andf i want something fast
+" set rtp+=$HOME/miniforge3/envs/myenv/lib/python3.8/site-packages/powerline/bindings/vim/
 
 " " HASKELL
 " if working with other compiled languages can prefix autocmd Filetype haskell
@@ -167,17 +168,19 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/goyo.vim'
     Plug 'junegunn/limelight.vim'
     Plug 'lervag/vimtex'
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'vim-airline/vim-airline'
+    " Plug 'neoclide/coc.nvim', {'branch': 'release'}
     Plug 'preservim/nerdtree'
     Plug 'tmhedberg/SimpylFold'
     Plug 'tpope/vim-commentary'
     Plug 'tpope/vim-surround'
+    Plug 'tpope/vim-fugitive'
 call plug#end()
 
-nmap <silent> gd <Plug>(coc-definition)
+" nmap <silent> gd <Plug>(coc-definition)
 " coc autocomplete behave like PyCharm (tab selects first option and closes)
 " syntax is pumvisible? (do if yes) : (do if no) - so in this case if no just stays as is
-inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "<Tab>"
+" inoremap <silent><expr> <Tab> pumvisible() ? coc#_select_confirm() : "<Tab>"
 " the line below and above prevent Tab and CR from being literal when a pop-up menu is open
 inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
 
@@ -187,12 +190,12 @@ command! FZFMru call fzf#run({
 \  'options': '-m -x +s',
 \  'down':    '40%'})
 
-if $CONDA_PREFIX == ""
-  let s:current_python_path=$CONDA_PYTHON_EXE
-else
-  let s:current_python_path=$CONDA_PREFIX.'/bin/python'
-endif
-call coc#config('python', {'pythonPath': s:current_python_path})
+" if $CONDA_PREFIX == ""
+  " let s:current_python_path=$CONDA_PYTHON_EXE
+" else
+  " let s:current_python_path=$CONDA_PREFIX.'/bin/python'
+" endif
+" call coc#config('python', {'pythonPath': s:current_python_path})
 
 function! s:goyo_enter()
   setlocal nolist nohls wrap linebreak nocursorline spell spelllang=en_gb noshowmatch iskeyword+=' nocindent tw=70

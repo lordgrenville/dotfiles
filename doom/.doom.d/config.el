@@ -50,9 +50,17 @@
    :n "[s"   #'evil-prev-flyspell-error
  )
 
+(defun next-search-and-centre ()
+  "Run `evil-ex-search-next` and `evil-scroll-line-to-center` in sequence."
+  (interactive)
+  (evil-ex-search-next 1)
+  (evil-scroll-line-to-center nil))
+
 (map!
  (:after evil
-   :n "z="   #'flyspell-correct-word-before-point)
+   :n "z=" #'flyspell-correct-word-before-point
+   :n "n"  #'next-search-and-centre
+   )
  )
 
 ;; keybind to disable search highlighting (like :set noh)
@@ -73,6 +81,9 @@
     )
    ))
 
+(after! treemacs
+  (setq treemacs-git-mode nil))
+
 (defun add-pcomplete-to-capf ()
   (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
 
@@ -83,7 +94,7 @@
 
 ; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
 ;
-(setq-hook! '(text-mode-hook) fill-column 145)
+;; (setq-hook! '(text-mode-hook) fill-column 145)
 
 ;; (after! treemacs
 ;;   (setq evil-treemacs-state-cursor nil
@@ -131,6 +142,7 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
 
 
 (after! org-capture
@@ -220,6 +232,13 @@ Lisp programs can force the template by setting KEYS to a string."
                `(("q" ,(concat (all-the-icons-octicon "stop" :face 'all-the-icons-red :v-adjust 0.01) "\tAbort")))))))
 (advice-add 'org-capture-select-template :override #'org-capture-select-template-prettier)
 
+; visual line numbers that work with folds
+(defun josh/toggle-relative-line-numbers ()
+  (interactive)
+  (if display-line-numbers
+      (setq display-line-numbers nil)
+    (progn (setq display-line-numbers 'visual)
+           )))
 ; Here are some additional functions/macros that could help you configure Doom:
 ;
 ; - `load!' for loading external *.el files relative to this one
