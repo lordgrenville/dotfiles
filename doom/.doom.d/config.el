@@ -10,10 +10,11 @@
    ;; doom-theme-treemacs-theme "doom-atom"
    doom-theme-treemacs-theme "doom-colors"
    org-directory "~/Dropbox/org/"
+   ;; org-hugo-base-dir "~/Documents/dev/blog/athena/"
    projectile-project-search-path '("~/Documents/")
 ; This determines the style of line numbers in effect. If set to `nil', line
 ; numbers are disabled. For relative line numbers, set this to `relative'.
-   display-line-numbers-type 'relative
+   display-line-numbers-type 'visual
    lsp-modeline-diagnostics-enable nil
 ;; display time, and don't show me the system load, which makes no sense to me
    display-time-default-load-average 'nil
@@ -22,7 +23,7 @@
 ; (matching the behaviour in Magit)
    org-cycle-emulate-tab 'nil
    comint-scroll-to-bottom-on-output t
-   ob-mermaid-cli-path "/usr/local/bin/mmdc"
+   ob-mermaid-cli-path "/opt/homebrew/bin/mmdc"
    doom-fallback-buffer-name "► Doom"
    +doom-dashboard-name "► Doom"
 ;; hide wrapping punctuation in org mode
@@ -31,7 +32,7 @@
    flycheck-global-modes '(not gfm-mode forge-post-mode gitlab-ci-mode dockerfile-mode Org-mode org-mode)
    conda-anaconda-home "~/miniforge3/"
 ; does this work? if not use M-x ispell-change-dict
-   ispell-dictionary "en_GB"
+   ispell-dictionary "en_ZA"
    ispell-program-name "aspell"
    ispell-extra-args '("--sug-mode=ultra" "--run-together")
    confirm-kill-emacs nil
@@ -69,6 +70,20 @@
       "s c"
       #'evil-ex-nohighlight)
 
+;; (map! :n
+;;       "C-a" #'evil-numbers/inc-at-pt
+;;       "C-x" #'evil-numbers/dec-at-pt
+;; )
+
+; (map!
+  ; :after company
+  ; :map company-active-map
+  ;; "RET" nil
+  ;; "<return>" nil
+  ;; [tab] nil
+  ; "TAB" nil
+  ; )
+
 (after! org
   (setq org-startup-folded t)
   (map! :localleader
@@ -87,8 +102,7 @@
 (defun add-pcomplete-to-capf ()
   (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
 
-(add-hook! 'org-mode-hook #'add-pcomplete-to-capf 'org-fragtog-mode)
-
+(add-hook! 'org-mode-hook #'turn-off-smartparens-mode #'add-pcomplete-to-capf 'org-fragtog-mode)
 (define-key global-map (kbd "C-c x")
   (lambda () (interactive) (org-capture nil "t")))
 
@@ -142,77 +156,108 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(with-eval-after-load 'ox
+  (require 'ox-hugo))
 
+(map! :after evil
+      ;; overrides the default of "correct before point", which has a nice
+      ;; GUI popup but crashes Emacs. Use C-o to get option to add/accept
+      :map evil-normal-state-map
+      "z=" #'flyspell-correct-wrapper
+      )
+(evil-define-key 'normal peep-dired-mode-map (kbd "<SPC>") 'peep-dired-scroll-page-down
+                                             (kbd "C-<SPC>") 'peep-dired-scroll-page-up
+                                             (kbd "<backspace>") 'peep-dired-scroll-page-up
+                                             (kbd "j") 'peep-dired-next-file
+                                             (kbd "k") 'peep-dired-prev-file)
+(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 
-(after! org-capture
+(with-eval-after-load 'treemacs
+  (defun treemacs-ignore-pycache (file _)
+    (string= file "__pycache__"))
+  (push #'treemacs-ignore-pycache treemacs-ignored-file-predicates))
 
-  (defun +doct-icon-declaration-to-icon (declaration)
-    "Convert :icon declaration to icon"
-    (let ((name (pop declaration))
-          (set  (intern (concat "all-the-icons-" (plist-get declaration :set))))
-          (face (intern (concat "all-the-icons-" (plist-get declaration :color))))
-          (v-adjust (or (plist-get declaration :v-adjust) 0.01)))
-      (apply set `(,name :face ,face :v-adjust ,v-adjust))))
+(setq counsel-find-file-ignore-regexp
+        (concat
+         ;; File names beginning with # or .
+         "\\(?:^[#.]\\)\\|\\(?:[#~]$\\)\\|\\(?:^Icon?\\)"
+         ;; File names ending with # or ~
+         "__pycache__"))
 
-  (defun +doct-iconify-capture-templates (groups)
-    "Add declaration's :icon to each template group in GROUPS."
-    (let ((templates (doct-flatten-lists-in groups)))
-      (setq doct-templates (mapcar (lambda (template)
-                                     (when-let* ((props (nthcdr (if (= (length template) 4) 2 5) template))
-                                                 (spec (plist-get (plist-get props :doct) :icon)))
-                                       (setf (nth 1 template) (concat (+doct-icon-declaration-to-icon spec)
-                                                                      "\t"
-                                                                      (nth 1 template))))
-                                     template)
-                                   templates))))
+;; (add-hook 'text-mode-hook 'turn-on-auto-fill)
+;; (add-hook 'org-mode-hook 'turn-off-auto-fill)
 
-  (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
+;; (after! treemacs
+;;   (setq treemacs-default-visit-action 'treemacs-visit-node-close-treemacs))
 
-  (defun set-org-capture-template ()
-    (setq org-capture-templates
-          (doct `(("Personal todo" :keys "t"
-                   :icon ("checklist" :set "octicon" :color "green")
-                   :file +org-capture-todo-file
-                   :prepend t
-                   :headline "Inbox"
-                   :type entry
-                   :template ("* TODO %?"
-                              "%i"))
-                  ("Personal note" :keys "n"
-                   :icon ("sticky-note-o" :set "faicon" :color "green")
-                   :file +org-capture-todo-file
-                   :prepend t
-                   :headline "Inbox"
-                   :type entry
-                   :template ("* %?"
-                              "%i %a"))
-                  ("Tasks" :keys "k"
-                   :icon ("inbox" :set "octicon" :color "yellow")
-                   :file +org-capture-todo-file
-                   :prepend t
-                   :headline "Tasks"
-                   :type entry
-                   :template ("* TODO %? %^G%{extra}"
-                              "%i %a")
-                   :children (("General Task" :keys "k"
-                               :icon ("inbox" :set "octicon" :color "yellow")
-                               :extra "")
-                              ("Task with deadline" :keys "d"
-                               :icon ("timer" :set "material" :color "orange" :v-adjust -0.1)
-                               :extra "\nDEADLINE: %^{Deadline:}t")
-                              ("Scheduled Task" :keys "s"
-                               :icon ("calendar" :set "octicon" :color "orange")
-                               :extra "\nSCHEDULED: %^{Start time:}t")))
-                  ))))
-  (set-org-capture-template)
-  (unless (display-graphic-p)
-    (add-hook 'server-after-make-frame-hook
-              (defun org-capture-reinitialise-hook ()
-                (when (display-graphic-p)
-                  (set-org-capture-templates)
-                  (remove-hook 'server-after-make-frame-hook
-                               #'org-capture-reinitialise-hook))))))
+;; (after! org-capture
+
+;;   (defun +doct-icon-declaration-to-icon (declaration)
+;;     "Convert :icon declaration to icon"
+;;     (let ((name (pop declaration))
+;;           (set  (intern (concat "all-the-icons-" (plist-get declaration :set))))
+;;           (face (intern (concat "all-the-icons-" (plist-get declaration :color))))
+;;           (v-adjust (or (plist-get declaration :v-adjust) 0.01)))
+;;       (apply set `(,name :face ,face :v-adjust ,v-adjust))))
+
+;;   (defun +doct-iconify-capture-templates (groups)
+;;     "Add declaration's :icon to each template group in GROUPS."
+;;     (let ((templates (doct-flatten-lists-in groups)))
+;;       (setq doct-templates (mapcar (lambda (template)
+;;                                      (when-let* ((props (nthcdr (if (= (length template) 4) 2 5) template))
+;;                                                  (spec (plist-get (plist-get props :doct) :icon)))
+;;                                        (setf (nth 1 template) (concat (+doct-icon-declaration-to-icon spec)
+;;                                                                       "\t"
+;;                                                                       (nth 1 template))))
+;;                                      template)
+;;                                    templates))))
+
+;;   (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
+
+;;   (defun set-org-capture-template ()
+;;     (setq org-capture-templates
+;;           (doct `(("Personal todo" :keys "t"
+;;                    :icon ("checklist" :set "octicon" :color "green")
+;;                    :file +org-capture-todo-file
+;;                    :prepend t
+;;                    :headline "Inbox"
+;;                    :type entry
+;;                    :template ("* TODO %?"
+;;                               "%i"))
+;;                   ("Personal note" :keys "n"
+;;                    :icon ("sticky-note-o" :set "faicon" :color "green")
+;;                    :file +org-capture-todo-file
+;;                    :prepend t
+;;                    :headline "Inbox"
+;;                    :type entry
+;;                    :template ("* %?"
+;;                               "%i %a"))
+;;                   ("Tasks" :keys "k"
+;;                    :icon ("inbox" :set "octicon" :color "yellow")
+;;                    :file +org-capture-todo-file
+;;                    :prepend t
+;;                    :headline "Tasks"
+;;                    :type entry
+;;                    :template ("* TODO %? %^G%{extra}"
+;;                               "%i %a")
+;;                    :children (("General Task" :keys "k"
+;;                                :icon ("inbox" :set "octicon" :color "yellow")
+;;                                :extra "")
+;;                               ("Task with deadline" :keys "d"
+;;                                :icon ("timer" :set "material" :color "orange" :v-adjust -0.1)
+;;                                :extra "\nDEADLINE: %^{Deadline:}t")
+;;                               ("Scheduled Task" :keys "s"
+;;                                :icon ("calendar" :set "octicon" :color "orange")
+;;                                :extra "\nSCHEDULED: %^{Start time:}t")))
+;;                   ))))
+;;   (set-org-capture-template)
+;;   (unless (display-graphic-p)
+;;     (add-hook 'server-after-make-frame-hook
+;;               (defun org-capture-reinitialise-hook ()
+;;                 (when (display-graphic-p)
+;;                   (set-org-capture-templates)
+;;                   (remove-hook 'server-after-make-frame-hook
+;;                                #'org-capture-reinitialise-hook))))))
 
 (defun org-capture-select-template-prettier (&optional keys)
   "Select a capture template, in a prettier way than default
@@ -232,13 +277,18 @@ Lisp programs can force the template by setting KEYS to a string."
                `(("q" ,(concat (all-the-icons-octicon "stop" :face 'all-the-icons-red :v-adjust 0.01) "\tAbort")))))))
 (advice-add 'org-capture-select-template :override #'org-capture-select-template-prettier)
 
+;; (add-hook 'tuareg-mode-hook #'(lambda() (setq mode-name "🐫")))
+
+;; (add-to-list 'load-path "/Users/josh/.opam/default/share/emacs/site-lisp")
+;; (require 'ocp-indent)
+
 ; visual line numbers that work with folds
-(defun josh/toggle-relative-line-numbers ()
-  (interactive)
-  (if display-line-numbers
-      (setq display-line-numbers nil)
-    (progn (setq display-line-numbers 'visual)
-           )))
+;; (defun josh/toggle-relative-line-numbers ()
+;;   (interactive)
+;;   (if display-line-numbers
+;;       (setq display-line-numbers nil)
+;;     (progn (setq display-line-numbers 'visual)
+;;            )))
 ; Here are some additional functions/macros that could help you configure Doom:
 ;
 ; - `load!' for loading external *.el files relative to this one

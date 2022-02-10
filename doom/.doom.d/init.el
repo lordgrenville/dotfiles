@@ -77,7 +77,9 @@
 
        :checkers
        syntax              ; tasing you for every semicolon you forget
-       (spell + flyspell)  ; tasing you for misspelling mispelling
+       (spell
+        +flyspell
+        +hunspell)               ; tasing you for misspelling mispelling
        ;;grammar           ; tasing grammar mistake every you make
 
        :os
@@ -108,7 +110,7 @@
        ;;agda              ; types of types of types of types...
        ;;assembly          ; assembly for fun or debugging
        ;;cc                ; C/C++/Obj-C madness
-       ;;clojure           ; java with a lisp
+       clojure           ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
@@ -119,7 +121,7 @@
        ;;elm               ; care for a cup of TEA?
        emacs-lisp          ; drown in parentheses
        ;;erlang            ; an elegant language for a more civilized age
-       ;;ess               ; emacs speaks statistics
+       ess               ; emacs speaks statistics
        ;;faust             ; dsp, but you get to keep your soul
        ;;fsharp           ; ML stands for Microsoft's Language
        ;;fstar             ; (dependent) types and (monadic) effects and Z3
@@ -164,6 +166,7 @@
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
+       yaml                ; if you actually want a mode just for this
        ;;web               ; the tubes
 
        :email

@@ -1,14 +1,25 @@
+# uncomment at top and bottom for profiling
+# zmodload zsh/zprof
+export LANG="en_US.UTF-8"
+export JAVA_HOME="/Users/josh/jdk-17.0.1.jdk/Contents/Home"
+
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000000
 SAVEHIST=10000000
-setopt SHARE_HISTORY             # Share history between all sessions.
-setopt HIST_IGNORE_DUPS          # Don't record an entry that was just recorded again.
+# setopt SHARE_HISTORY             # Share history between all sessions.
+# removeing this one since it adds timestamp to HISTFILE temporarily
+setopt HIST_IGNORE_ALL_DUPS      # ignores even non-consecutive dupes, unlike ginore_dups
 setopt HIST_FIND_NO_DUPS         # Do not display a line previously found.
 setopt HIST_IGNORE_SPACE         # Don't record an entry starting with a space.
 setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history file.
+setopt HIST_EXPIRE_DUPS_FIRST    # old dups will be wiped
 setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
 setopt HIST_VERIFY               # Don't execute immediately upon history expansion.
 setopt NO_BEEP                   # Don't beep
+unsetopt FLOWCONTROL             # enable C-q to "park"
+
+# Report CPU usage for commands running longer than 10 seconds
+REPORTTIME=10
 
 unsetopt correct_all
 setopt correct  # don't correct argument names
@@ -21,12 +32,17 @@ zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 setopt auto_cd
 DIRSTACKSIZE=20    
 setopt autopushd pushdsilent pushdtohome
-## Remove duplicate entries
+# Remove duplicate entries
 setopt pushdignoredups
-## This reverts the +/- operators.
+# This reverts the +/- operators.
 setopt pushdminus
 
 alias ll="exa --color auto --all --group-directories-first --long --group --header --modified --sort=name --git --time-style=long-iso --classify"
+alias ...="cd ../.."
+alias ....="cd ../../.."
+# ensure mac uses the homebrew version
+alias vi=/opt/homebrew/bin/vi
+alias expand="source /opt/homebrew/share/zsh-abbr/zsh-abbr.zsh"
 
 bindkey "^[f" forward-word
 bindkey "^[b" backward-word
@@ -37,7 +53,7 @@ export LC_ALL=en_US.UTF-8
 export VIRTUAL_ENV_DISABLE_PROMPT=0
 
 # use cd~wo<TAB> to get to work folder
-export work=/Users/josh/Documents/research
+export work=/Users/josh/Documents/work
 
 # the below is a function. functions are defined either by the word function, or by the syntax foo ()
 # it calls git credential-osxkeychain and begins a HERE DOCUMENT, a way to put interactive content into a shell
@@ -51,9 +67,9 @@ protocol=https
 EOF
 
 if [ "$1" = "lordgrenville" ]; then
-  password=$(<~/ghpwpers.txt)
+  password=$(<~/.config/ghpwpers.txt)
 elif  [ "$1" = "josh-medorion" ]; then
-  password=$(<~/ghpw.txt)
+  password=$(<~/.config/ghpw.txt)
 fi
 
 git credential-osxkeychain store <<EOF
@@ -79,7 +95,7 @@ if [ *(om[1]) != "foo" ]; then
 fi
 unzip -qq -o foo.zip -d foo/
 cd foo/
-grep -RIi $1 .
+grep --color=always -RIi $1 .
 }
 
 # >>> conda initialize >>>
@@ -119,20 +135,26 @@ destroy_env() {deactivate && rm -rf temp_env/}
 
 # use fzf to switch conda env!!!
 co() {
-  conda deactivate && conda activate $(ls ~/anaconda3/envs/ | fzf)
+  conda deactivate && conda activate $(ls ~/miniforge3/envs/ | fzf)
 }
-
 # Add default node to path
-export PATH=~/.nvm/versions/node/v15.14.0/bin:$PATH
-
+# export PATH=~/.nvm/versions/node/v15.14.0/bin:$PATH
 # Load NVM
-export NVM_DIR=~/.nvm
+# export NVM_DIR=~/.nvm
+
+# [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh" --no-use
+# export NVM_DIR="$HOME/.nvm"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# [[ ! -r /Users/josh/.opam/opam-init/init.zsh ]] || source /Users/josh/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
 
 eval "$(starship init zsh)"
 
 # plugins
-source /opt/homebrew/share/zsh-abbr/zsh-abbr.zsh
+# source /opt/homebrew/share/zsh-abbr/zsh-abbr.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fpath=( /Users/josh/misc/ohmyzsh/plugins/gitfast $fpath )
+# see top
+# zprof
