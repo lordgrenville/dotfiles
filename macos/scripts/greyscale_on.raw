@@ -1,0 +1,35 @@
+# quit system preferences if running
+if running of application "System Preferences" then
+	try
+		tell application "System Preferences" to quit
+	on error
+		do shell script "killall 'System Preferences'"
+	end try
+end if
+
+# wait for system preferences to quit
+with timeout of 10 seconds
+	repeat while running of application "System Preferences" is true
+		delay 0.01
+	end repeat
+end timeout
+
+# switch to correct anchor
+tell application "System Preferences" to reveal anchor "Seeing_ColorFilters" of pane "Accessibility"
+#tell application "System Preferences" to activate
+#get the name of every anchor of pane "Accessibility" of application "System Preferences"
+
+tell application "System Events" to tell process "System Preferences" to tell window "Accessibility"
+	#return UI elements of tab group 1 of group 1
+	with timeout of 10 seconds
+		repeat until exists checkbox "Enable Colour Filters" of tab group 1 of group 1
+			delay 0.01
+		end repeat
+	end timeout
+	set theCheckbox to checkbox "Enable Colour Filters" of tab group 1 of group 1
+	tell theCheckbox
+		if not (its value as boolean) then click theCheckbox
+	end tell
+end tell
+
+tell application "System Preferences" to quit
