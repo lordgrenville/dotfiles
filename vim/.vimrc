@@ -55,8 +55,6 @@ vnoremap <tab> %
 
 syntax enable
 set termguicolors
-" silent! colorscheme material-monokai " if you don't find it, I don't want to hear you whine about it
-silent! colorscheme snazzy
 
 filetype plugin indent on
 
@@ -177,6 +175,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'tpope/vim-fugitive'
 call plug#end()
 
+" silent! colorscheme material-monokai " if you don't find it, I don't want to hear you whine about it
+" colorscheme must be loaded after plug, if you're installing with plug
+colorscheme snazzy
 " nmap <silent> gd <Plug>(coc-definition)
 " coc autocomplete behave like PyCharm (tab selects first option and closes)
 " syntax is pumvisible? (do if yes) : (do if no) - so in this case if no just stays as is
