@@ -43,6 +43,21 @@
 
 (display-time)
 
+(defun apply-to-region (func)
+  (unless (use-region-p)
+    (error "need an active region"))
+  (let ((res (funcall func (buffer-substring (mark) (point)))))
+    (delete-region (region-beginning) (region-end))
+    (insert res))
+  )
+
+(defun text-to-wikipedia-link (string)
+  "Convert a string to a link to English Wikipedia"
+        (concat "[[https://en.wikipedia.org/wiki/" (subst-char-in-string ?  ?_ string) "][" string "]]"))
+
+(defun my/org-insert-wikipedia-link ()
+  (interactive)
+  (apply-to-region 'text-to-wikipedia-link))
 ; in doom instead of define-key you have a convenience macro map!
 ; you can prepend :leader, or :en for emacs, normal mode etc
 ; more at :h map!
@@ -89,6 +104,9 @@
   (map! :localleader
         :map org-mode-map
         (:desc "Insert source code block" "i" 'org-insert-structure-template))
+  (map! :localleader
+        :map org-mode-map
+        (:desc "Make Wikipedia link" "w" #'my/org-insert-wikipedia-link))
   (map!
    (
     :n "<down>"   #'evil-next-visual-line
@@ -128,13 +146,26 @@
 (add-hook 'text-mode-hook #'flyspell-mode)
 
 ;; (evil-set-initial-state 'term-mode 'emacs)
-(evil-set-initial-state 'vterm-mode 'emacs)
+;; (evil-set-initial-state 'vterm-mode 'emacs)
 ;; (evil-set-initial-state 'help-mode 'emacs)
 ;; (evil-set-initial-state 'shell-mode 'emacs)
 ;; (evil-set-initial-state 'dired-mode 'emacs)
 ;; (evil-set-initial-state 'wdired-mode 'normal)
-(evil-set-initial-state 'git-commit-mode 'emacs)
-(evil-set-initial-state 'git-rebase-mode 'emacs)
+;; (evil-set-initial-state 'git-commit-mode 'emacs)
+;; (evil-set-initial-state 'git-rebase-mode 'emacs)
+
+;; the above was rewritten into a loop using the dolist macro!
+(dolist (mode '(
+                   ;; term-mode
+                   ;; vterm-mode
+                   ;; help-mode
+                   ;; shell-mode
+                   ;; dired-mode
+                   ;; wdired-mode
+                   git-commit-mode
+                   git-rebase-mode
+                   ))
+  (evil-set-initial-state mode 'emacs))
 
 ;; stuff from Tecosaur, not major
 ; show battery status in bottom right
