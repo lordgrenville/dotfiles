@@ -128,7 +128,7 @@ ffind() {
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # create venv, silently update pip
-create_env() {python3 -m venv temp_env/; source temp_env/bin/activate}
+create_env() {python3 -m venv --upgrade-deps temp_env/; source temp_env/bin/activate}
 # create_env() {python3 -m venv temp_env/; source temp_env/bin/activate; echo 'Updating pip...'; $(which python3.9) -m pip install --upgrade pip 1>/dev/null}
 
 destroy_env() {deactivate && rm -rf temp_env/}
@@ -136,6 +136,10 @@ destroy_env() {deactivate && rm -rf temp_env/}
 # use fzf to switch conda env!!!
 co() {
   conda deactivate && conda activate $(ls ~/miniforge3/envs/ | fzf)
+}
+
+tm() {
+tmux a -t $(tmux list-sessions | sed -E 's/:.*$//' | grep -v \"^$(tmux display-message -p '#S')\$\" | fzf)
 }
 # Add default node to path
 # export PATH=~/.nvm/versions/node/v15.14.0/bin:$PATH
