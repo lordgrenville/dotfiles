@@ -128,7 +128,7 @@ ffind() {
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # create venv, silently update pip
-create_env() {python3 -m venv --upgrade-deps temp_env/; source temp_env/bin/activate}
+create_env() {/opt/homebrew/bin/python3 -m venv --upgrade-deps temp_env/; source temp_env/bin/activate}
 # create_env() {python3 -m venv temp_env/; source temp_env/bin/activate; echo 'Updating pip...'; $(which python3.9) -m pip install --upgrade pip 1>/dev/null}
 
 destroy_env() {deactivate && rm -rf temp_env/}
