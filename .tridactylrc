@@ -1,4 +1,0 @@
-seturl localhost superignore true
-bind <Space> scrollpage 0.75
-unbind d
-bind q tabclose

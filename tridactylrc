@@ -1,0 +1,19 @@
+" save in ~/.config/tridactyl/tridactylrc, then run :source or restart browser to source changes
+seturl localhost superignore true
+set modeindicator false
+bind <Space> scrollpage 0.75
+unbind d
+bind q tabclose
+colourscheme shydactyl
+
+" Comment toggler for Reddit, Hacker News and Lobste.rs
+bind ;c hint -Jc [class*="expand"],[class*="togg"],[class="comment_folder"]
+
+" Only hint search results on DDG
+bindurl ^https://duckduckgo.com f hint -Jc [data-testid="result-title-a"]
+bindurl ^https://duckduckgo.com F hint -Jbc [data-testid="result-title-a"]
+
+" " This (clearly) is remotely hosted code. Google will be sent the whole
+" " contents of the page you are on if you run `:translate`
+" " From https://github.com/jeremiahlee/page-translator
+command translate js let googleTranslateCallback = document.createElement('script'); googleTranslateCallback.innerHTML = "function googleTranslateElementInit(){ new google.translate.TranslateElement(); }"; document.body.insertBefore(googleTranslateCallback, document.body.firstChild); let googleTranslateScript = document.createElement('script'); googleTranslateScript.charset="UTF-8"; googleTranslateScript.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit&tl=&sl=&hl="; document.body.insertBefore(googleTranslateScript, document.body.firstChild);
