@@ -2,6 +2,7 @@
 seturl localhost superignore true
 set modeindicator false
 bind <Space> scrollpage 0.75
+unbind A
 unbind d
 bind q tabclose
 colourscheme shydactyl
