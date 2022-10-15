@@ -1,0 +1,62 @@
+{
+    "snippets" : [
+        {
+            "name" : "notebook intro",
+            "code" : [
+                "import pandas as pd",
+                "import numpy as np",
+                "import matplotlib.pyplot as plt",
+                "import seaborn as sns",
+                "pd.options.display.max_rows = 999",
+                "pd.options.display.max_columns = 999"
+            ]
+        },
+        {
+            "name" : "plot starter pack",
+            "code" : [
+                "_, ax = plt.subplots(figsize=(15,3))",
+                "df[col].plot(ax=ax);"
+            ]
+        },
+        {
+            "name" : "xpath basics",
+            "code" : [
+                "browser.find_element_by_xpath('//div[@class=\"my_name\"]')"
+            ]
+        },
+        {
+            "name" : "methods w/o dunders",
+            "code" : [
+                "[m for m in dir(x) if '__' not in m]"
+            ]
+        },
+        {
+            "name" : "noTEXbook",
+            "code" : [
+                "%load_ext notexbook",
+                "%texify"
+            ]
+        },
+        {
+            "name" : "colourful boxes",
+            "code" : [
+                "<div class='alert alert-block alert-info'> <b>NOTE</b> Use blue boxes for Tips and notes. </div>",
+
+                "<div class='alert alert-block alert-success'> Use green boxes sparingly, and only for some specific purpose that the other boxes can't cover. For example, if you have a lot of related content to link to, maybe you decide to use green boxes for related links from each section of a notebook. </div>",
+
+                "<div class='alert alert-block alert-warning'> Use yellow boxes for examples that are not inside code cells, or use for mathematical formulas if needed. </div>",
+
+                "<div class='alert alert-block alert-danger'> In general, just avoid the red boxes. </div>"
+            ]
+        },
+        {
+            "name" : "format SQL query",
+            "code" : [
+                "import sqlparse",
+                "print(sqlparse.format(query, reindent_aligned=True, keyword_case='upper'))"
+            ]
+        }
+
+
+    ]
+}
