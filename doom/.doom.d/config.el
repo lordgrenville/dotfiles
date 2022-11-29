@@ -35,7 +35,6 @@
    ispell-dictionary "en_ZA"
    ispell-program-name "aspell"
    ispell-extra-args '("--sug-mode=ultra" "--run-together")
-   confirm-kill-emacs nil
    org-todo-keywords '((sequence "TODO" "DONE"))
    ; for mac with external keyboard: https://github.com/hlissner/doom-emacs/issues/3952#issuecomment-716608614
    ns-right-option-modifier 'left
