@@ -2,6 +2,8 @@
 # zmodload zsh/zprof
 export LANG="en_US.UTF-8"
 export JAVA_HOME="/Users/josh/jdk-17.0.1.jdk/Contents/Home"
+# export EDITOR="/opt/homebrew/bin/vi"
+export BAT_THEME="Sublime Snazzy"
 
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000000
@@ -36,6 +38,8 @@ setopt autopushd pushdsilent pushdtohome
 setopt pushdignoredups
 # This reverts the +/- operators.
 setopt pushdminus
+
+PYTHONSTARTUP=~/.pythonrc
 
 alias ll="exa --color auto --all --group-directories-first --long --group --header --modified --sort=name --git --time-style=long-iso --classify"
 alias ...="cd ../.."
