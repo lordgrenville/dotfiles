@@ -18,6 +18,7 @@
    lsp-modeline-diagnostics-enable nil
 ;; display time, and don't show me the system load, which makes no sense to me
    display-time-default-load-average 'nil
+   dired-kill-when-opening-new-dired-buffer t
    +ivy-buffer-preview t
 ; in org-mode, TAB key cycles headings even inside text block, rather than emulating real tab
 ; (matching the behaviour in Magit)
@@ -32,9 +33,9 @@
    flycheck-global-modes '(not gfm-mode forge-post-mode gitlab-ci-mode dockerfile-mode Org-mode org-mode)
    conda-anaconda-home "~/miniforge3/"
 ; does this work? if not use M-x ispell-change-dict
-   ispell-dictionary "en_ZA"
-   ispell-program-name "aspell"
-   ispell-extra-args '("--sug-mode=ultra" "--run-together")
+   ;; ispell-dictionary "en_ZA"
+   ;; ispell-program-name "aspell"
+   ;; ispell-extra-args '("--sug-mode=ultra" "--run-together")
    org-todo-keywords '((sequence "TODO" "DONE"))
    ; for mac with external keyboard: https://github.com/hlissner/doom-emacs/issues/3952#issuecomment-716608614
    ns-right-option-modifier 'left
@@ -57,12 +58,21 @@
 (defun my/org-insert-wikipedia-link ()
   (interactive)
   (apply-to-region 'text-to-wikipedia-link))
-; in doom instead of define-key you have a convenience macro map!
+
+(defun number-to-whatsapp-link (string)
+  "Phone number to whatsapp link"
+        (concat "https://web.whatsapp.com/send/?phone=972" (string-remove-prefix "0" string) ))
+
+(defun my/make-whatsapp-link ()
+  (interactive)
+  (apply-to-region 'number-to-whatsapp-link))
+
+; in doom instead of define-key you have a  macro map!
 ; you can prepend :leader, or :en for emacs, normal mode etc
 ; more at :h map!
 (map!
-   :n "]s"   #'evil-next-flyspell-error
-   :n "[s"   #'evil-prev-flyspell-error
+ :n "]s"   #'evil-next-flyspell-error
+ :n "[s"   #'evil-prev-flyspell-error
  )
 
 (defun next-search-and-centre ()
@@ -110,6 +120,8 @@
    (
     :n "<down>"   #'evil-next-visual-line
     :n "<up>"   #'evil-previous-visual-line
+    :n "j"   #'evil-next-visual-line
+    :n "k"   #'evil-previous-visual-line
     )
    ))
 
@@ -119,9 +131,12 @@
 (defun add-pcomplete-to-capf ()
   (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
 
-(add-hook! 'org-mode-hook #'turn-off-smartparens-mode #'add-pcomplete-to-capf 'org-fragtog-mode)
-(define-key global-map (kbd "C-c x")
-  (lambda () (interactive) (org-capture nil "t")))
+(add-hook! 'org-mode-hook
+           #'turn-off-smartparens-mode
+           ;; #'add-pcomplete-to-capf
+           'org-fragtog-mode)
+;; (define-key global-map (kbd "C-c x")
+;;   (lambda () (interactive) (org-capture nil "t")))
 
 ; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
 ;
@@ -178,7 +193,8 @@
   (toggle-frame-fullscreen))
 
 (defun doom-modeline-conditional-buffer-encoding ()
-  "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
+  "We expect the encoding to be LF UTF-8, so only show the modeline when this is
+   not the case"
   (setq-local doom-modeline-buffer-encoding
               (unless (or (eq buffer-file-coding-system 'utf-8-unix)
                           (eq buffer-file-coding-system 'utf-8)))))
@@ -289,23 +305,23 @@
 ;;                   (remove-hook 'server-after-make-frame-hook
 ;;                                #'org-capture-reinitialise-hook))))))
 
-(defun org-capture-select-template-prettier (&optional keys)
-  "Select a capture template, in a prettier way than default
-Lisp programs can force the template by setting KEYS to a string."
-  (let ((org-capture-templates
-         (or (org-contextualize-keys
-              (org-capture-upgrade-templates org-capture-templates)
-              org-capture-templates-contexts)
-             '(("t" "Task" entry (file+headline "" "Tasks")
-                "* TODO %?\n  %u\n  %a")))))
-    (if keys
-        (or (assoc keys org-capture-templates)
-            (error "No capture template referred to by \"%s\" keys" keys))
-      (org-mks org-capture-templates
-               "Select a capture template\n━━━━━━━━━━━━━━━━━━━━━━━━━"
-               "Template key: "
-               `(("q" ,(concat (all-the-icons-octicon "stop" :face 'all-the-icons-red :v-adjust 0.01) "\tAbort")))))))
-(advice-add 'org-capture-select-template :override #'org-capture-select-template-prettier)
+;; (defun org-capture-select-template-prettier (&optional keys)
+;;   "Select a capture template, in a prettier way than default
+;; Lisp programs can force the template by setting KEYS to a string."
+;;   (let ((org-capture-templates
+;;          (or (org-contextualize-keys
+;;               (org-capture-upgrade-templates org-capture-templates)
+;;               org-capture-templates-contexts)
+;;              '(("t" "Task" entry (file+headline "" "Tasks")
+;;                 "* TODO %?\n  %u\n  %a")))))
+;;     (if keys
+;;         (or (assoc keys org-capture-templates)
+;;             (error "No capture template referred to by \"%s\" keys" keys))
+;;       (org-mks org-capture-templates
+;;                "Select a capture template\n━━━━━━━━━━━━━━━━━━━━━━━━━"
+;;                "Template key: "
+;;                `(("q" ,(concat (all-the-icons-octicon "stop" :face 'all-the-icons-red :v-adjust 0.01) "\tAbort")))))))
+;; (advice-add 'org-capture-select-template :override #'org-capture-select-template-prettier)
 
 ;; (add-hook 'tuareg-mode-hook #'(lambda() (setq mode-name "🐫")))
 
