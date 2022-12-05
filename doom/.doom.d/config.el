@@ -230,6 +230,11 @@
          ;; File names ending with # or ~
          "__pycache__"))
 
+(add-hook 'python-mode-hook
+          (lambda ()
+            (+fold/close-all)
+            ))
+
 ;; (add-hook 'text-mode-hook 'turn-on-auto-fill)
 ;; (add-hook 'org-mode-hook 'turn-off-auto-fill)
 
