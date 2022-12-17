@@ -74,6 +74,18 @@
 (map!
  :n "]s"   #'evil-next-flyspell-error
  :n "[s"   #'evil-prev-flyspell-error
+ :leader :desc "Clear search highlight" "s c" #'evil-ex-nohighlight
+ :leader "j" #'evilem-motion-next-line
+ :leader "k" #'evilem-motion-previous-line
+ )
+
+(map!
+ (:after evil
+  :n "z=" #'flyspell-correct-word-before-point
+  :n "n"  #'next-search-and-centre)
+ ;; overrides the default of "correct before point", which has a nice
+ ;; GUI popup but crashes Emacs. Use C-o to get option to add/accept
+ ;; :map evil-normal-state-map "z=" #'flyspell-correct-wrapper
  )
 
 (defun next-search-and-centre ()
@@ -92,19 +104,6 @@
   (evil-goto-mark char noerror)
   (evil-first-non-blank)
   (evil-scroll-line-to-center nil))
-
-(map!
- (:after evil
-  :n "z=" #'flyspell-correct-word-before-point
-  :n "n"  #'next-search-and-centre
-  )
- )
-
-;; keybind to disable search highlighting (like :set noh)
-(map! :leader
-      :desc "Clear search highlight"
-      "s c"
-      #'evil-ex-nohighlight)
 
 (after! org
   (setq org-startup-folded t)
@@ -128,7 +127,6 @@
 
 (add-hook! 'org-mode-hook
            #'turn-off-smartparens-mode
-           ;; #'add-pcomplete-to-capf
            'org-fragtog-mode)
 
 ; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
@@ -190,13 +188,6 @@
 
 (with-eval-after-load 'ox
   (require 'ox-hugo))
-
-(map! :after evil
-      ;; overrides the default of "correct before point", which has a nice
-      ;; GUI popup but crashes Emacs. Use C-o to get option to add/accept
-      :map evil-normal-state-map
-      "z=" #'flyspell-correct-wrapper
-      )
 
 (evil-define-key 'normal peep-dired-mode-map (kbd "<SPC>") 'peep-dired-scroll-page-down
                                              (kbd "C-<SPC>") 'peep-dired-scroll-page-up
