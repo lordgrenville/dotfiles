@@ -65,28 +65,12 @@ export work=/Users/josh/Documents/work
 # $1 and $2 are the username and password args
 
 switch_git_cred () {
-git credential-osxkeychain erase <<EOF
-host=github.com
-protocol=https
-EOF
-
 if [ "$1" = "lordgrenville" ]; then
-  password=$(<~/.config/ghpwpers.txt)
-elif  [ "$1" = "josh-medorion" ]; then
-  password=$(<~/.config/ghpw.txt)
-fi
-
-git credential-osxkeychain store <<EOF
-host=github.com
-protocol=https
-username=$1
-password=$password
-EOF
-
-if [ "$1" = "lordgrenville" ]; then
-  git config --global user.username "lordgrenville" && git config --global user.email "16547083+lordgrenville@users.noreply.github.com"
-elif  [ "$1" = "josh-medorion" ]; then
-  git config --global user.username "josh-medorion" && git config --global user.email "josh@medorion.com"
+  git config --global user.username "lordgrenville" && git config --global user.email "16547083+lordgrenville@users.noreply.github.com" \
+      && git config --global core.sshCommand "ssh -i ~/.ssh/id_rsa_pers -F /dev/null"
+elif  [ "$1" = "josh-scadafence" ]; then
+  git config --global user.username "josh-scadafence" && git config --global user.email "josh.friedlander@scadafence.com" \
+      && git config --global core.sshCommand "ssh -i ~/.ssh/id_rsa_work -F /dev/null"
 fi
 } 
 
