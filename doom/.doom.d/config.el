@@ -1,46 +1,51 @@
 ;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 (setq
-   user-full-name "Josh Friedlander"
-   user-mail-address "joshuatfriedlander@gmail.com"
-   ;; doom-font (font-spec :family "Fira Mono for Powerline" :size 16)
-   doom-font (font-spec :family "Fira Mono for Powerline" :size 16 :weight 'light)
-   doom-variable-pitch-font (font-spec :family "Noto Sans" :size 13)
-   doom-theme 'doom-dracula
-   ;; doom-theme-treemacs-theme "doom-atom"
-   doom-theme-treemacs-theme "doom-colors"
-   org-directory "~/Dropbox/org/"
-   ;; org-hugo-base-dir "~/Documents/dev/blog/athena/"
-   projectile-project-search-path '("~/Documents/")
-; This determines the style of line numbers in effect. If set to `nil', line
-; numbers are disabled. For relative line numbers, set this to `relative'.
-   display-line-numbers-type 'visual
-   lsp-modeline-diagnostics-enable nil
-;; display time, and don't show me the system load, which makes no sense to me
-   display-time-default-load-average 'nil
-   dired-kill-when-opening-new-dired-buffer t
-   +ivy-buffer-preview t
-; in org-mode, TAB key cycles headings even inside text block, rather than emulating real tab
-; (matching the behaviour in Magit)
-   org-cycle-emulate-tab 'nil
-   comint-scroll-to-bottom-on-output t
-   ob-mermaid-cli-path "/opt/homebrew/bin/mmdc"
-   doom-fallback-buffer-name "► Doom"
-   +doom-dashboard-name "► Doom"
-;; hide wrapping punctuation in org mode
-   org-hide-emphasis-markers t
-; ignore org-mode and others in flycheck (syntax checker)
-   flycheck-global-modes '(not gfm-mode forge-post-mode gitlab-ci-mode dockerfile-mode Org-mode org-mode)
-   conda-anaconda-home "~/miniforge3/"
-; does this work? if not use M-x ispell-change-dict
-   ispell-dictionary "en_ZA"
-   ;; ispell-local-dictionary "en_ZA"
-   ;; ispell-program-name "aspell"
-   ;; ispell-extra-args '("--sug-mode=ultra" "--run-together")
-   org-todo-keywords '((sequence "TODO" "DONE"))
-   ; for mac with external keyboard: https://github.com/hlissner/doom-emacs/issues/3952#issuecomment-716608614
-   ns-right-option-modifier 'left
-)
+  user-full-name "Josh Friedlander"
+  user-mail-address "joshuatfriedlander@gmail.com"
+  doom-font (font-spec :family "Fira Mono for Powerline" :size 16)
+  ;; doom-variable-pitch-font (font-spec :family "Liberation Mono" :size 15)
+  ;; doom-variable-pitch-font (font-spec :family "Meslo LG M DZ for Powerline" :size 15)
+  doom-variable-pitch-font (font-spec :family "Noto Sans" :size 13)
+  doom-theme-treemacs-theme "doom-colors"
+  delete-by-moving-to-trash t
+  undo-limit 9999999
+  evil-want-fine-undo t
+  ;; I think I want autosave-visited-mode here? but might be on by default?
+  auto-save-default t
+  scroll-margin 2
+  lsp-pylsp-server-command "/home/josh/.local/bin/pylsp"
+  org-directory "~/Dropbox/org/"
+  ;; org-hugo-base-dir "~/Documents/dev/blog/athena/"
+  projectile-project-search-path '("~/Documents/")
+  ; This determines the style of line numbers in effect. If set to `nil', line
+  ; numbers are disabled. For relative line numbers, set this to `relative'.
+  display-line-numbers-type 'visual
+  lsp-modeline-diagnostics-enable nil
+  ;; display time, and don't show me the system load, which makes no sense to me
+  display-time-default-load-average 'nil
+  dired-kill-when-opening-new-dired-buffer t
+  +ivy-buffer-preview t
+  ; in org-mode, TAB key cycles headings even inside text block, rather than emulating real tab
+  ; (matching the behaviour in Magit)
+  org-cycle-emulate-tab 'nil
+  comint-scroll-to-bottom-on-output t
+  ob-mermaid-cli-path "/opt/homebrew/bin/mmdc"
+  ;; hide wrapping punctuation in org mode
+  org-hide-emphasis-markers t
+  ; ignore org-mode and others in flycheck (syntax checker)
+  flycheck-global-modes '(not gfm-mode forge-post-mode gitlab-ci-mode dockerfile-mode Org-mode org-mode)
+  ; does this work? if not use M-x ispell-change-dict
+  ispell-dictionary "en_ZA"
+  ;; ispell-local-dictionary "en_ZA"
+  ;; ispell-program-name "aspell"
+  ;; ispell-extra-args '("--sug-mode=ultra" "--run-together")
+  org-todo-keywords '((sequence "TODO" "DONE"))
+  ; for mac with external keyboard: https://github.com/hlissner/doom-emacs/issues/3952#issuecomment-716608614
+  ns-right-option-modifier 'left
+  ;; hides top menu bar on Gnome
+  default-frame-alist '((undecorated . t))
+  )
 
 (display-time)
 
@@ -83,6 +88,7 @@
  (:after evil
   :n "z=" #'flyspell-correct-word-before-point
   :n "n"  #'next-search-and-centre)
+  :n "C-t" nil
  ;; overrides the default of "correct before point", which has a nice
  ;; GUI popup but crashes Emacs. Use C-o to get option to add/accept
  ;; :map evil-normal-state-map "z=" #'flyspell-correct-wrapper
