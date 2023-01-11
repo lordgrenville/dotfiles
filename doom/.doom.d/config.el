@@ -4,15 +4,13 @@
   user-full-name "Josh Friedlander"
   user-mail-address "joshuatfriedlander@gmail.com"
   doom-font (font-spec :family "Fira Mono for Powerline" :size 16)
-  ;; doom-variable-pitch-font (font-spec :family "Liberation Mono" :size 15)
-  ;; doom-variable-pitch-font (font-spec :family "Meslo LG M DZ for Powerline" :size 15)
-  doom-variable-pitch-font (font-spec :family "Noto Sans" :size 13)
+  doom-variable-pitch-font (font-spec :family "Liberation Mono" :size 15)
+  doom-variable-pitch-font (font-spec :family "Meslo LG M DZ for Powerline" :size 15)
   doom-theme-treemacs-theme "doom-colors"
   delete-by-moving-to-trash t
   undo-limit 9999999
   evil-want-fine-undo t
-  ;; I think I want autosave-visited-mode here? but might be on by default?
-  auto-save-default t
+  auto-save-visited-mode t
   scroll-margin 2
   lsp-pylsp-server-command "/home/josh/.local/bin/pylsp"
   org-directory "~/Dropbox/org/"
@@ -40,7 +38,7 @@
   ;; ispell-local-dictionary "en_ZA"
   ;; ispell-program-name "aspell"
   ;; ispell-extra-args '("--sug-mode=ultra" "--run-together")
-  org-todo-keywords '((sequence "TODO" "DONE"))
+  ;; org-todo-keywords '((sequence "TODO" "DONE"))
   ; for mac with external keyboard: https://github.com/hlissner/doom-emacs/issues/3952#issuecomment-716608614
   ns-right-option-modifier 'left
   ;; hides top menu bar on Gnome
@@ -79,6 +77,7 @@
 (map!
  :n "]s"   #'evil-next-flyspell-error
  :n "[s"   #'evil-prev-flyspell-error
+ :n "ze"   #'hs-hide-level
  :leader :desc "Clear search highlight" "s c" #'evil-ex-nohighlight
  :leader "j" #'evilem-motion-next-line
  :leader "k" #'evilem-motion-previous-line
@@ -144,11 +143,16 @@
 ;;         treemacs-width 30))
 
 (add-hook! python-mode
-  (conda-env-activate "myenv")
-  (lambda () (+fold/close-all))
+  (+fold/close-all)         ; like in VS Code (does this work tho?)
+  (set-fill-column 120)
+  (display-fill-column-indicator-mode)
+  (pyvenv-activate "/home/josh/Documents/work/py3")
+  (pyvenv--add-dirs-to-PATH '("/home/josh/Documents/work/scadafence/sf-post-processing", "/home/josh/Documents/work/scadafence/utils/python",
+                              "/home/josh/Documents/work/scadafence/integration-test"))
 )
 
 (setq-hook! 'python-mode-hook
+  ; pylsp formatter doesn't work, overrride it manually
   +format-with 'black
 ; pylsp formatter doesn't work, overrride it manually
   lsp-pylsp-plugins-pydocstyle-enabled nil
@@ -159,7 +163,7 @@
 (remove-hook 'text-mode-hook #'spell-fu-mode)
 (add-hook 'text-mode-hook #'flyspell-mode)
 
-(dolist (mode '(
+;; (dolist (mode '(
                    ;; term-mode
                    ;; vterm-mode
                    ;; help-mode
@@ -168,8 +172,8 @@
                    ;; wdired-mode
                    ;; git-commit-mode
                    ;; git-rebase-mode
-                   ))
-  (evil-set-initial-state mode 'emacs))
+                   ;; ))
+  ;; (evil-set-initial-state mode 'emacs))
 
 ;; stuff from Tecosaur, not major
 ; show battery status in bottom right
