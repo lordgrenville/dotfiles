@@ -1,9 +1,13 @@
 [
 	{ "keys": [":"], "type": "function", "command": "enter_command_line_mode" },
 	{ "keys": ["TAB"], "type": "function", "command": "focus_next" },
+	{ "keys": ["l"], "type": "function", "command": "focus_next" },
 	{ "keys": ["SHIFT_TAB"], "type": "function", "command": "focus_previous" },
+	{ "keys": ["h"], "type": "function", "command": "focus_previous" },
 	{ "keys": ["UP"], "type": "function", "command": "move_up" },
+	{ "keys": ["k"], "type": "function", "command": "move_up" },
 	{ "keys": ["DOWN"], "type": "function", "command": "move_down" },
+	{ "keys": ["j"], "type": "function", "command": "move_down" },
 	{ "keys": ["PAGE_UP"], "type": "function", "command": "page_up" },
 	{ "keys": ["PAGE_DOWN"], "type": "function", "command": "page_down" },
 	{ "keys": ["ENTER"], "type": "function", "command": "activate" },
