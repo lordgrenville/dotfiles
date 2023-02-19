@@ -1,34 +1,42 @@
 import XMonad
-import XMonad.Hooks.DynamicLog
-import XMonad.Layout.NoBorders
-import XMonad.Util.Run(spawnPipe)
 import XMonad.Actions.CycleWS
+import XMonad.Config.Gnome
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.FadeInactive (fadeInactiveLogHook)
+import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.SetWMName (setWMName)
+import XMonad.Layout.NoBorders (smartBorders)
+import XMonad.Layout.Spacing
 import XMonad.Util.EZConfig(additionalKeys)
-import System.IO
+import XMonad.Util.SpawnOnce
 
--- use names instead of keysyms for audio keys. on Arch you first need to cabal install --lib X11
 import Graphics.X11.ExtraTypes.XF86
 
 main = do
-    xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
+  xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
 
--- Command to launch the bar.
-myBar = "xmobar"
-
--- Custom PP, configure it as you like. It determines what is being written to the bar.
-myPP = xmobarPP
-
--- Key binding to toggle the gap for the bar.
+myModMask            = mod4Mask
+myLayoutHook         = avoidStruts $ spacingRaw False (Border 0 10 10 10) True (Border 10 10 10 10) True $ smartBorders (layoutHook gnomeConfig)
+myBorderWidth        = 0
+myFocusedBorderColor = "#ffffff"
+myNormalBorderColor  = "#cccccc"
 toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
--- Main configuration, override the defaults to your liking.
-myConfig = def { terminal = "/usr/bin/urxvt"
-               , startupHook = spawn "feh --no-fehbg --bg-fill '/josh/Pictures/hill.webp' '/josh/Pictures/trees.jpg'"
-               , layoutHook = noBorders Full
-               , modMask = mod4Mask
-               }
-                               `additionalKeys`
-                [
+-- support xcompmgr events
+myLogHook            = do
+  logHook gnomeConfig
+  fadeInactiveLogHook 0.6
+
+myStartupHook        = do
+  startupHook gnomeConfig
+  setWMName "LG3D"
+  spawn "xcompmgr -cfF -t-9 -l-11 -r9 -o.95 -D6 &"
+  spawnOnce "feh --no-fehbg --bg-fill '/home/josh/street_computer/Pictures/background pics/bike (2).jpg' '/home/josh/street_computer/Pictures/background pics/best-nature-full-hd-wallpapers31.jpg'"
+-- Command to launch the bar.
+myBar = "xmobar"
+myPP = xmobarPP
+
+myKeys = [
                 -- toggle through workspaces in order
                   ((mod4Mask, xK_Down),  nextWS)
                 , ((mod4Mask, xK_Up),    prevWS)
@@ -43,17 +51,22 @@ myConfig = def { terminal = "/usr/bin/urxvt"
                 -- requires rofi + drun (obvs), papirus-icon-theme
                 , ((mod1Mask, xK_space     ), spawn "rofi -combi-modi drun -theme solarized -font 'hack 10' -show combi -icon-theme 'Papirus' -show-icons")
                 -- special audio keys
-                ,((0        , xF86XK_AudioLowerVolume), spawn "amixer -q sset Master 1%-")
-                ,((0        , xF86XK_AudioRaiseVolume), spawn "amixer -q sset Master 1%+")
-                ,((0        , xF86XK_AudioMute), spawn "amixer set Master toggle")
-                ,((0        , xF86XK_AudioPlay), spawn "playerctl play-pause")
-                ,((0        , xF86XK_AudioPrev), spawn "playerctl previous")
-                ,((0        , xF86XK_AudioNext), spawn "playerctl next")
+                ,((0        , xK_F1), spawn "amixer -D pulse sset Master toggle")
+                ,((0        , xK_F2), spawn "amixer -q -D pulse sset Master 1%-")
+                ,((0        , xK_F3), spawn "amixer -q -D pulse sset Master 1%+")
+                -- ,((0        , xF86XK_AudioPlay), spawn "playerctl play-pause")
+                -- ,((0        , xF86XK_AudioPrev), spawn "playerctl previous")
+                -- ,((0        , xF86XK_AudioNext), spawn "playerctl next")
+                ,((0        , xF86XK_PowerDown), spawn "sudo systemctl suspend")
                 -- alternatively with keysyms
                 -- ,((0        , 0x1008FF11), spawn "amixer -q sset Master 1%-")
-                -- ,((0        , 0x1008FF12), spawn "amixer set Master toggle")
-                -- ,((0        , 0x1008FF13), spawn "amixer -q sset Master 1%+")
-                -- ,((0        , 0x1008FF14), spawn "playerctl play-pause")
-                -- ,((0        , 0x1008FF16), spawn "playerctl previous")
-                -- ,((0        , 0x1008FF17), spawn "playerctl next")
                 ]
+
+myConfig = def { modMask = myModMask
+          , layoutHook         = myLayoutHook
+          , borderWidth        = myBorderWidth
+          , focusedBorderColor = myFocusedBorderColor
+          , normalBorderColor  = myNormalBorderColor
+          , logHook            = myLogHook
+          , startupHook        = myStartupHook
+          } `additionalKeys` myKeys
