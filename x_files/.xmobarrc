@@ -9,8 +9,8 @@ Config { font = "xft:Ubuntu:weight=bold:pixelsize=13:antialias=true:hinting=true
         , pickBroadest = True
         , position = TopW L 100
         , commands = [
-                      Run Weather "LLBG" [ "--template", "<fc=#4682B4><tempC></fc>°C|<fc=#4682B4><rh></fc>%|<fc=#4682B4><pressure></fc>hPa"] 36000
-                      , Run Network "enp1s0" ["-L","0","-H","32","--normal","green","--high","red"] 10
+                      Run Weather "LLBG" [ "--template", "<fn=2>\xf76b</fn><fc=#4682B4>  <tempC></fc>°C | <fc=#4682B4><rh></fc>% | <fc=#4682B4><pressure></fc>hPa"] 36000
+                      , Run Network "enp1s0" ["--template", "<fn=2>\xf1eb</fn>  <dev>  <rx>KB | <tx>KB", "-L","0","-H","32","--normal","green","--high","red"] 10
                       --, Run Network "wlp2s0" ["-L","0","-H","32","--normal","green","--high","red"] 10
                       -- cpu core temperature monitor
                       , Run CoreTemp       [ "--template" , "temp <core0>°C"
@@ -20,9 +20,9 @@ Config { font = "xft:Ubuntu:weight=bold:pixelsize=13:antialias=true:hinting=true
                                            , "--normal"   , "darkorange"
                                            , "--high"     , "darkred"
                                            ] 50
-                      , Run Volume "default" "Master" ["--template" , "vol <volume>%"] 10 
+                      , Run Volume "default" "Master" ["--template" , "<fn=2>\xf027</fn>  <volume>%"] 10 
                       -- memory usage monitor
-                      , Run Memory         [ "--template" ,"<fn=2>\xf233</fn> mem <usedratio>%"
+                      , Run Memory         [ "--template" ,"<fn=2>\xf233</fn>  mem <usedratio>%"
                                            , "--Low"      , "20"        -- units: %
                                            , "--High"     , "90"        -- units: %
                                            , "--low"      , "darkgreen"
@@ -39,7 +39,7 @@ Config { font = "xft:Ubuntu:weight=bold:pixelsize=13:antialias=true:hinting=true
                                            ] 10
 
                       -- battery monitor
-                      , Run Battery        [ "--template" , "bat <acstatus>"
+                      , Run Battery        [ "--template" , "<fn=2>\xf242</fn>  <acstatus>"
                                            , "--Low"      , "10"        -- units: %
                                            , "--High"     , "80"        -- units: %
                                            , "--low"      , "darkred"
@@ -55,13 +55,18 @@ Config { font = "xft:Ubuntu:weight=bold:pixelsize=13:antialias=true:hinting=true
                         , Run Kbd [ ("za" , "<fc=#ffcc00>EN</fc>") , ("il", "<fc=#8B0000>HE</fc>") ]
                         , Run Cpu ["--template" , "<fn=2>\xf108</fn>  cpu <total>%", "-L","3","-H","50","--normal","green","--high","red"] 10
                         , Run Date "<fn=2>\xf017</fn>  %a %b %_d %Y %H:%M" "date" 10
-                        , Run StdinReader
+                        --, Run StdinReader
+                        , Run XMonadLog
                         --Audacious music player
                         , Run Com "/bin/bash" ["-c","if [ $(pidof audacious) ];then echo `audtool --current-song`;else echo -;fi"] "aud1" 10
                         , Run Com "/bin/bash" ["-c","if [ $(pidof audacious) ];then echo `audtool --current-song-output-length`;else echo -;fi"] "aud2" 10
                         , Run Com "/bin/bash" ["-c","if [ $(pidof audacious) ];then echo `audtool --current-song-length`;else echo -;fi"] "aud3" 10
+                        --Musique music player
+                        -- , Run Com "echo" ["<fn=2>\xf001</fn>"] "noteicon" 3600
+                        -- , Run Com "/bin/bash" ["-c","if [ $(pidof musique) ];then echo `lsof -w -c musique | grep street_computer | awk 'BEGIN {FS = "/"}; NR==1 {print $(NF-1)}'`;else echo -;fi"] "mualbum" 10
+                        -- , Run Com "/bin/bash" ["-c","if [ $(pidof musique) ];then echo `lsof -w -c musique | grep street_computer | awk 'BEGIN {FS = "/"}; NR==1 {print $(NF)}'`;else echo -;fi"] "mutrack" 10
                         ]
         , sepChar = "%"
         , alignSep = "}{"
-        , template = " %cpu% | %coretemp% | %memory% %swap% | %enp1s0% | %default:Master% | %battery% | %kbd% | %aud1% | %aud2% | %aud3% }{<fc=#ee9a00>%date%</fc>|%LLBG%"
+        , template = "%XMonadLog%  %cpu%   %coretemp% | %memory%  %swap% | %enp1s0% | %default:Master% | %battery% | %kbd% | %aud1% | %aud2% | %aud3%  }{<fc=#ee9a00>%date%</fc> | %LLBG%"
         }
