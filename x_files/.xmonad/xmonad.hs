@@ -67,6 +67,7 @@ myXmobarPP = def
 
 myConfig = def
     { modMask            = mod4Mask      -- Rebind Mod to the Super key
+    , terminal           = "gnome-terminal"
     , layoutHook         = myLayoutHook  -- Use custom layouts
     , borderWidth        = myBorderWidth
     , focusedBorderColor = myFocusedBorderColor
