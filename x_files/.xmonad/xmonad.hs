@@ -12,6 +12,7 @@ import XMonad.Layout.Spacing
 import XMonad.Util.EZConfig(additionalKeys)
 import XMonad.Util.Loggers
 import XMonad.Util.SpawnOnce
+import XMonad.Util.Ungrab
 
 import Graphics.X11.ExtraTypes.XF86
 
@@ -25,9 +26,10 @@ main = xmonad
 myBorderWidth        = 0
 myFocusedBorderColor = "#ffffff"
 myNormalBorderColor  = "#cccccc"
+-- fancy spacing - a little bit of space between edges of screen and window, plus windows from each other
 myLayoutHook         = avoidStruts $ spacingRaw False (Border 0 10 10 10) True (Border 10 10 10 10) True $ smartBorders (layoutHook gnomeConfig)
 
--- support xcompmgr events
+-- support xcompmgr events (cool transparency effect for inactive window)
 myLogHook            = do
   logHook gnomeConfig
   fadeInactiveLogHook 0.6
@@ -37,6 +39,7 @@ myStartupHook        = do
   spawn "xcompmgr -cfF -t-9 -l-11 -r9 -o.95 -D6 &"
   spawnOnce "feh --no-fehbg --bg-fill '/home/josh/street_computer/Pictures/background pics/bike (2).jpg' '/home/josh/street_computer/Pictures/background pics/best-nature-full-hd-wallpapers31.jpg'"
 
+-- nice xmobar preferences (pp = pretty print) - show me active workspace, don't tell me layout (i don't care)
 myXmobarPP :: PP
 myXmobarPP = def
     { ppSep             = magenta " • "
@@ -52,8 +55,7 @@ myXmobarPP = def
     formatFocused   = wrap (white    "[") (white    "]") . magenta . ppWindow
     formatUnfocused = wrap (lowWhite "[") (lowWhite "]") . blue    . ppWindow
 
-    -- | Windows should have *some* title, which should not not exceed a
-    -- sane length.
+    -- Windows should have *some* title, which should not not exceed a sane length.
     ppWindow :: String -> String
     ppWindow = xmobarRaw . (\w -> if null w then "untitled" else w) . shorten 50
 
@@ -66,9 +68,9 @@ myXmobarPP = def
     lowWhite = xmobarColor "#bbbbbb" ""
 
 myConfig = def
-    { modMask            = mod4Mask      -- Rebind Mod to the Super key
+    { modMask            = mod4Mask
     , terminal           = "gnome-terminal"
-    , layoutHook         = myLayoutHook  -- Use custom layouts
+    , layoutHook         = myLayoutHook
     , borderWidth        = myBorderWidth
     , focusedBorderColor = myFocusedBorderColor
     , normalBorderColor  = myNormalBorderColor
@@ -79,8 +81,7 @@ myConfig = def
     [ -- toggle through workspaces in order
       ((mod4Mask, xK_Down),  nextWS)
     , ((mod4Mask, xK_Up),    prevWS)
-    -- switch focus between *screens*
-    -- (by default this is M-w,e,r...)
+    -- switch focus between *screens* (by default this is M-w,e,r...)
     , ((mod4Mask, xK_Right), nextScreen)
     , ((mod4Mask, xK_Left),  prevScreen)
     -- alt tab to toggle most recent two windows
@@ -93,6 +94,9 @@ myConfig = def
     ,((0        , xK_F1), spawn "amixer -D pulse sset Master toggle")
     ,((0        , xK_F2), spawn "amixer -q -D pulse sset Master 1%-")
     ,((0        , xK_F3), spawn "amixer -q -D pulse sset Master 1%+")
+    -- print screen
+    --, ((0       , xK_Print), unGrab *> spawn "scrot -s")
+    , ((0       , 0xff61), unGrab *> spawn "scrot -s")
     -- ,((0        , xF86XK_AudioPlay), spawn "playerctl play-pause")
     -- ,((0        , xF86XK_AudioPrev), spawn "playerctl previous")
     -- ,((0        , xF86XK_AudioNext), spawn "playerctl next")
