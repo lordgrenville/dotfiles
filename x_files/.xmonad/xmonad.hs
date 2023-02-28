@@ -16,6 +16,17 @@ import XMonad.Util.Ungrab
 
 import Graphics.X11.ExtraTypes.XF86
 
+{- my config, designed on ubuntu. requirements:
+    - xmonad 0.17+ (the one packaged by Debian is lower, so you need to build yourself)
+    - xmobar (duh)
+    - feh
+    - rofi
+    - dmenu
+    - and scrot, but I think this was already installed
+    - xcompmgr (for transparency)
+    - xdotool, xclip (for rofimoji)
+    - (optional) audacious
+-}
 main :: IO ()
 main = xmonad
      . ewmhFullscreen
@@ -90,18 +101,17 @@ myConfig = def
     -- alt-Space à la macOS Spotlight Cmd-Space
     -- requires rofi + drun (obvs), papirus-icon-theme
     , ((mod1Mask, xK_space     ), spawn "rofi -combi-modi drun -theme solarized -font 'hack 10' -show combi -icon-theme 'Papirus' -show-icons")
+    , ((mod1Mask, xK_e     ), spawn "rofi -modi \"emoji:$(which rofimoji) --action copy --clipboarder xclip\" -show emoji")
     -- special audio keys
-    ,((0        , xK_F1), spawn "amixer -D pulse sset Master toggle")
-    ,((0        , xK_F2), spawn "amixer -q -D pulse sset Master 1%-")
-    ,((0        , xK_F3), spawn "amixer -q -D pulse sset Master 1%+")
-    -- print screen
-    --, ((0       , xK_Print), unGrab *> spawn "scrot -s")
-    , ((0       , 0xff61), unGrab *> spawn "scrot -s")
+    ,((0        , xF86XK_AudioMute), spawn "amixer -D pulse sset Master toggle")
+    ,((0        , xF86XK_AudioLowerVolume), spawn "amixer -q -D pulse sset Master 5%-")
+    ,((0        , xF86XK_AudioRaiseVolume), spawn "amixer -q -D pulse sset Master 5%+")
     -- ,((0        , xF86XK_AudioPlay), spawn "playerctl play-pause")
     -- ,((0        , xF86XK_AudioPrev), spawn "playerctl previous")
     -- ,((0        , xF86XK_AudioNext), spawn "playerctl next")
+    -- print screen - xK_Print doesn't work, seems to be a known issue
+    --, ((0       , xK_Print), unGrab *> spawn "scrot -s")
+    , ((0       , 0xff61), unGrab *> spawn "scrot -s")
     ,((0        , xF86XK_PowerDown), spawn "sudo systemctl suspend")
-    -- alternatively with keysyms
-    -- ,((0        , 0x1008FF11), spawn "amixer -q sset Master 1%-")
     ]
 
