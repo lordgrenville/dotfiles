@@ -100,8 +100,8 @@ myConfig = def
     , ((mod4Mask, xK_p     ), spawn "dmenu_run")
     -- alt-Space à la macOS Spotlight Cmd-Space
     -- requires rofi + drun (obvs), papirus-icon-theme
-    , ((mod1Mask, xK_space     ), spawn "rofi -combi-modi drun -theme solarized -font 'hack 10' -show combi -icon-theme 'Papirus' -show-icons")
-    , ((mod1Mask, xK_e     ), spawn "rofi -modi \"emoji:$(which rofimoji) --action copy --clipboarder xclip\" -show emoji")
+    , ((mod1Mask, xK_space ), spawn "rofi -combi-modi drun -theme solarized -font 'hack 10' -show combi -icon-theme 'Papirus' -show-icons")
+    , ((mod1Mask, xK_e     ), spawn "rofi -modi \"emoji:$(which rofimoji)\" -show emoji")
     -- special audio keys
     ,((0        , xF86XK_AudioMute), spawn "amixer -D pulse sset Master toggle")
     ,((0        , xF86XK_AudioLowerVolume), spawn "amixer -q -D pulse sset Master 5%-")
