@@ -4,8 +4,10 @@ set modeindicator false
 bind <Space> scrollpage 0.75
 unbind A
 unbind d
+unbind <C-f>
 bind q tabclose
 colourscheme shydactyl
+bindurl wikipedia\.org F hint -W tabopen -b
 
 " Comment toggler for Reddit, Hacker News and Lobste.rs
 bind ;c hint -Jc [class*="expand"],[class*="togg"],[class="comment_folder"]
