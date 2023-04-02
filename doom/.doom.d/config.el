@@ -3,7 +3,7 @@
 (setq
   user-full-name "Josh Friedlander"
   user-mail-address "joshuatfriedlander@gmail.com"
-  doom-font (font-spec :family "Fira Mono for Powerline" :size 16)
+  doom-font (font-spec :family "Fira Mono for Powerline" :size 14)
   doom-variable-pitch-font (font-spec :family "Liberation Mono" :size 15)
   doom-variable-pitch-font (font-spec :family "Meslo LG M DZ for Powerline" :size 15)
   doom-theme-treemacs-theme "doom-colors"
@@ -12,7 +12,7 @@
   evil-want-fine-undo t
   auto-save-visited-mode t
   scroll-margin 2
-  lsp-pylsp-server-command "/home/josh/.local/bin/pylsp"
+  lsp-pylsp-server-command "/Users/josh/miniconda3/envs/pronto/bin/pylsp"
   org-directory "~/Dropbox/org/"
   ;; org-hugo-base-dir "~/Documents/dev/blog/athena/"
   projectile-project-search-path '("~/Documents/")
@@ -34,15 +34,17 @@
   ; ignore org-mode and others in flycheck (syntax checker)
   flycheck-global-modes '(not gfm-mode forge-post-mode gitlab-ci-mode dockerfile-mode Org-mode org-mode)
   ; does this work? if not use M-x ispell-change-dict
-  ispell-dictionary "en_ZA"
-  ;; ispell-local-dictionary "en_ZA"
+  ;; ispell-dictionary "en_ZA"
+  ;; ispell-hunspell-dict-paths-alist '(("en_GB" . ("/Library/Spelling/en_GB.aff")))
+  ;; ispell-local-dictionary-alist '(("en_GB" "[A-Za-z]" "[^A-Za-z]" "['’]" t ("-d en_GB") nil utf-8))
+  ispell-local-dictionary "en_GB"
   ;; ispell-program-name "aspell"
-  ;; ispell-extra-args '("--sug-mode=ultra" "--run-together")
+  ;; ispell-extra-args '("--sug-mode=ultra" "--lang=en_ZA")
   ;; org-todo-keywords '((sequence "TODO" "DONE"))
   ; for mac with external keyboard: https://github.com/hlissner/doom-emacs/issues/3952#issuecomment-716608614
   ns-right-option-modifier 'left
   ;; hides top menu bar on Gnome
-  default-frame-alist '((undecorated . t))
+  ; default-frame-alist '((undecorated . t))
   )
 
 (display-time)
@@ -63,13 +65,40 @@
   (interactive)
   (apply-to-region 'text-to-wikipedia-link))
 
+
+(defun my/move-and-fold-toggle ()
+  (interactive)
+  (evil-first-non-blank)
+  (+fold/toggle))
+
 (defun number-to-whatsapp-link (string)
   "Phone number to whatsapp link"
-        (concat "https://web.whatsapp.com/send/?phone=972" (string-remove-prefix "0" string) ))
+  (concat "https://web.whatsapp.com/send/?phone=972" (string-remove-prefix "0" string) ))
 
 (defun my/make-whatsapp-link ()
   (interactive)
   (apply-to-region 'number-to-whatsapp-link))
+
+(defun my/fix-mac-quotes ()
+  "Replace those badly named 'smart quotes' Apple loves with something simpler"
+  (interactive)
+  (replace-string-in-region "“" "\"" (point-min))
+  (replace-string-in-region "”" "\"" (point-min))
+  )
+
+(defun jump-down-to-non-whitespace-char-in-same-column ()
+  (interactive)
+  (evil-next-line)
+  (while (or (= (char-after (point)) 32)
+             (= (char-after (point)) 10))
+    (evil-next-line)))
+
+(defun jump-up-to-non-whitespace-char-in-same-column ()
+  (interactive)
+  (evil-previous-line)
+  (while (or (= (char-after (point)) 32)
+            (= (char-after (point)) 10))
+    (evil-previous-line)))
 
 ; in doom instead of define-key you have a  macro map!
 ; you can prepend :leader, or :en for emacs, normal mode etc
@@ -78,6 +107,7 @@
  :n "]s"   #'evil-next-flyspell-error
  :n "[s"   #'evil-prev-flyspell-error
  :n "ze"   #'hs-hide-level
+ :n "zi" #'my/move-and-fold-toggle
  :leader :desc "Clear search highlight" "s c" #'evil-ex-nohighlight
  :leader "j" #'evilem-motion-next-line
  :leader "k" #'evilem-motion-previous-line
@@ -144,17 +174,18 @@
 
 (add-hook! python-mode
   (+fold/close-all)         ; like in VS Code (does this work tho?)
-  (set-fill-column 120)
-  (display-fill-column-indicator-mode)
-  (pyvenv-activate "/home/josh/Documents/work/py3")
-  (pyvenv--add-dirs-to-PATH '("/home/josh/Documents/work/scadafence/sf-post-processing", "/home/josh/Documents/work/scadafence/utils/python",
-                              "/home/josh/Documents/work/scadafence/integration-test"))
+  ;; (set-fill-column 120)
+  ;; (display-fill-column-indicator-mode)
+  (conda-env-activate "pronto")
+  ;; (pyvenv--add-dirs-to-PATH '("/home/josh/Documents/work/scadafence/sf-post-processing", "/home/josh/Documents/work/scadafence/utils/python",
+  ;;                             "/home/josh/Documents/work/scadafence/integration-test"))
 )
 
 (setq-hook! 'python-mode-hook
   ; pylsp formatter doesn't work, overrride it manually
   +format-with 'black
-; pylsp formatter doesn't work, overrride it manually
+  ; pylsp formatter doesn't work, overrride it manually
+  lsp-pylsp-plugins-pylint-enabled t
   lsp-pylsp-plugins-pydocstyle-enabled nil
   lsp-pylsp-plugins-flake8-config "/Users/josh/.flake8"
   )
@@ -181,10 +212,10 @@
                (battery))
   (display-battery-mode 1))
 
-; start in fullscreen
-(if (eq initial-window-system 'x) ; if started by emacs command or desktop file
-    (toggle-frame-maximized)
-  (toggle-frame-fullscreen))
+;; start in fullscreen
+;; (if (eq initial-window-system 'x) ; if started by emacs command or desktop file
+;;     (toggle-frame-maximized)
+;;   (toggle-frame-fullscreen))
 
 (defun doom-modeline-conditional-buffer-encoding ()
   "We expect the encoding to be LF UTF-8, so only show the modeline when this is
