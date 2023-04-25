@@ -16,7 +16,6 @@
     var a = JSON.parse(localStorage.getItem("persist:root"));
     var b = JSON.parse(a.tikun);
     b.toraPageColumnsCount = 2;
-    b.torahFont = "Tzlotana";
     a.tikun = JSON.stringify(b);
     localStorage.setItem("persist:root", JSON.stringify(a));
 
@@ -26,15 +25,20 @@
 
     function check(changes, observer) {
         if(document.querySelector(".word")) {
+            observer.disconnect();
+
+            // Set the classier looking font
+            document.documentElement.style.setProperty("--tora-font-family", '"Tzlotana"');
+            document.documentElement.style.setProperty("--tora-font-feature-settings", '"cv18"');
             const words = document.getElementsByClassName('word');
             for (let item of words) {
                 onLongPress(item);
+
             }
 
         }
     }
 
-    
     const words = document.getElementsByClassName('word');
     for (let item of words) {
         onLongPress(item);
@@ -57,9 +61,4 @@
         return false;
 
     }
-    // Set the classier looking font
-    // document.documentElement.style.setProperty("--tora-font-family", '"Tzlotana"');
-    // document.documentElement.style.setProperty("--tora-font-feature-settings", '"cv18"');
-    // debugger;
-
 })();
