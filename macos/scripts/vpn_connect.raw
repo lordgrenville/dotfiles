@@ -1,0 +1,10 @@
+# running with osascript from a non-compiled file, will compile to a .scpt file
+# and in the process tell application will launch the app if it's not already open
+# however if you compile it then it won't do this, so need to check if it's open
+# so better not to compile it I think? https://stackoverflow.com/a/16071855/6220759
+tell application "System Events"
+	tell application process "AnyDesk"
+		click button 4 of group 1 of list 2 of list 1 of scroll area 1 of window "New Session"
+	end tell
+end tell
+activate application "iTerm2"

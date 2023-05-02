@@ -1,0 +1,8 @@
+activate application "AnyDesk"
+# added a shortcut for Disconnect menu option to F14 (Scroll Lock) on my windows keyboard
+# Found the key code here https://apple.stackexchange.com/a/36947/447359
+# or /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/HIToolbox.framework/Versions/A/Headers/Events.h
+# and just convert from hex to decimal
+tell application "System Events" to key code 107
+end
+activate application "iTerm2"
