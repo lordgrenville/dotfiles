@@ -204,6 +204,9 @@ function! s:goyo_enter()
   source ~/.vim/misc/autocorrect.vim
 endfunction
 
+" open file with same folds and cursor position as last time
+au BufWinLeave * mkview
+au BufWinEnter * silent! loadview
 " escape to exit terminal mode
 " commented out cos it messes things up!
 " tnoremap <Esc> <C-\><C-n>:bd!<CR>
