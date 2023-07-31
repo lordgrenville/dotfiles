@@ -1,10 +1,10 @@
 add_newline = false
 
-[character]
-success_symbol = '[ 🐼 ]()'
-
 [aws]
 disabled = true
+
+[character]
+success_symbol = '[ 🐼 ]()'
 
 [cmd_duration]
 disabled = true
@@ -13,10 +13,12 @@ disabled = true
 format = '[$symbol$environment]($style)'
 symbol =  '🅒  '
 
-[line_break]
-disabled = true
+[hostname]
+ssh_only = true
+format = '[🧌   BEAST 🧌   ](bold red)'
+disabled = false
 
-[nodejs]
+[line_break]
 disabled = true
 
 [python]
@@ -25,3 +27,8 @@ version_format = "${raw}"
 
 [terraform]
 format = "[🏎💨 $version$workspace]($style) "
+
+[time]
+disabled = false
+format = '⏰[ $time ](bold blue)'
+time_format = '%R'
