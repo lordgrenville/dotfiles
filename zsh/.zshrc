@@ -111,3 +111,9 @@ source /usr/share/zsh-abbr/zsh-abbr.zsh
 
 fpath=( /Users/josh/misc/gitfast $fpath )
 # zprof
+
+# when opening new shells in tmux sessions, don't switch dirs and obviously don't nest my TMUX session
+if !  [ -n "$TMUX" ];  then
+  tmux attach -t guest
+  cd /mnt/data1/FIEF
+fi
