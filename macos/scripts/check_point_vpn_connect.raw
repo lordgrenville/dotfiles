@@ -1,0 +1,20 @@
+tell application "System Events" to tell ¬
+	process "EndpointConnect" to tell ¬
+	menu bar 2 to tell ¬
+	menu bar item 1
+	
+	if not (exists) then return null
+	
+	click
+	click menu item "Connect" of menu 1
+	delay 1
+	keystroke "*********"
+	
+end tell
+
+
+tell application "System Events" to tell ¬
+	process "EndpointConnect" to tell ¬
+	button "Connect" of window "Check Point Mobile"
+	click
+end tell
