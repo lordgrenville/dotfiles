@@ -1,0 +1,1 @@
+Put the prompt file in `~/.ipython/profile_default/startup`, after running `ipython profile create` (assuming you only want one profile, like a sane person). You can add any files you want here and they will be executed on startup (eg to import some modules).
