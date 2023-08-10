@@ -30,8 +30,8 @@ serverfault.com##.mb16.s-anchors__default.s-anchors.s-sidebarwidget__yellow.s-si
 serverfault.com##.s-sidebarwidget.s-sidebarwidget__yellow.s-anchors.s-anchors__grayscale.mb16
 
 ! matlab docs country select overlay
-mathworks.com###country-select-container
-mathworks.com##.modal-backdrop.fade.in
+!mathworks.com###country-select-container
+!mathworks.com##.modal-backdrop.fade.in
 
 !make medium readable
 medium.com##.metabar
@@ -39,3 +39,13 @@ medium.com##.js-stickyFooter
 medium.com##.js-postAttributionFooterContainer
 medium.com##.js-postActionsFooter .buttonSet
 medium.com##.button--follow
+
+! 2023-07-04 https://www.youtube.com
+!www.youtube.com###secondary
+www.youtube.com###related
+!m.youtube.com##ytm-watch ytm-item-section-renderer[data-content-type="related"]
+www.youtube.com##ytd-browse[page-subtype="home"]
+!m.youtube.com##ytm-browse div[tab-identifier="FEwhat_to_watch"]
+www.youtube.com##.ytp-ce-element
+www.youtube.com##.ytp-endscreen-content
+
