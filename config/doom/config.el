@@ -164,6 +164,23 @@
            #'turn-off-smartparens-mode
            'org-fragtog-mode)
 
+(defun my/query-fixup-tool ()
+  "Remember where cursor was, do the replacements, copy to clipboard, then undo"
+  (interactive)
+  (save-excursion
+    (undo-boundary)
+    (goto-char (point-min))
+    (while (search-forward "PROJECTID_REPLACE" nil t)
+      (replace-match "anzu-179515" t t))
+    (goto-char (point-min))
+  (let ((replacement (if (y-or-n-p "Replace with migration?") "migration" "production")))
+    (while (search-forward "DATASET_REPLACE" nil t)
+        (replace-match replacement t t)))
+    (kill-ring-save (point-min) (point-max))
+    (undo)
+    ))
+
+
 ; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
 ;; (setq-hook! '(text-mode-hook) fill-column 145)
 
@@ -171,6 +188,9 @@
 ;;   (setq evil-treemacs-state-cursor nil
 ;;         treemacs-show-cursor nil
 ;;         treemacs-width 30))
+
+;; if long file, fold it
+(if (< 50 (count-lines (point-min) (point-max))) (+fold/close-all))
 
 (add-hook! python-mode
   (+fold/close-all)         ; like in VS Code (does this work tho?)
