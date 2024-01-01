@@ -165,21 +165,22 @@
            'org-fragtog-mode)
 
 (defun my/query-fixup-tool ()
-  "Remember where cursor was, do the replacements, copy to clipboard, then undo"
+  "Replace in either the region or the buffer and copy to clipboard"
   (interactive)
-  (save-excursion
-    (undo-boundary)
-    (goto-char (point-min))
-    (while (search-forward "PROJECTID_REPLACE" nil t)
-      (replace-match "anzu-179515" t t))
-    (goto-char (point-min))
-  (let ((replacement (if (y-or-n-p "Replace with migration?") "migration" "production")))
-    (while (search-forward "DATASET_REPLACE" nil t)
-        (replace-match replacement t t)))
-    (kill-ring-save (point-min) (point-max))
-    (undo)
-    ))
-
+        (let (
+             (begin (if (region-active-p) (min (point) (mark)) (point-min)))
+             (end   (if (region-active-p) (max (point) (mark)) (point-max)))
+             )
+        (kill-ring-save begin end))
+        (with-temp-buffer
+          (yank)
+          (replace-string-in-region "PROJECTID_REPLACE" "anzu-179515" (point-min))
+        (let (
+              (replacement (if (y-or-n-p "Replace with migration?") "migration" "production"))
+              )
+          (replace-string-in-region "DATASET_REPLACE" replacement (point-min)))
+          (kill-region (point-min) (point-max)))
+  )
 
 ; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
 ;; (setq-hook! '(text-mode-hook) fill-column 145)
