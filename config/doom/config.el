@@ -167,19 +167,19 @@
 (defun my/query-fixup-tool ()
   "Replace in either the region or the buffer and copy to clipboard"
   (interactive)
-        (let (
-             (begin (if (region-active-p) (min (point) (mark)) (point-min)))
-             (end   (if (region-active-p) (max (point) (mark)) (point-max)))
-             )
-        (kill-ring-save begin end))
-        (with-temp-buffer
-          (yank)
-          (replace-string-in-region "PROJECTID_REPLACE" "anzu-179515" (point-min))
-        (let (
-              (replacement (if (y-or-n-p "Replace with migration?") "migration" "production"))
-              )
-          (replace-string-in-region "DATASET_REPLACE" replacement (point-min)))
-          (kill-region (point-min) (point-max)))
+  (let (
+        (begin (if (region-active-p) (point) (point-min)))
+        (end   (if (region-active-p) (mark) (point-max)))
+        )
+    (kill-ring-save begin end))
+  (with-temp-buffer
+    (yank)
+    (replace-string-in-region "PROJECTID_REPLACE" "anzu-179515" (point-min))
+    (let (
+          (replacement (if (y-or-n-p "Replace with migration?") "migration" "production"))
+          )
+      (replace-string-in-region "DATASET_REPLACE" replacement (point-min)))
+    (kill-region (point-min) (point-max)))
   )
 
 ; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
