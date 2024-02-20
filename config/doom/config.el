@@ -111,6 +111,7 @@
  :leader :desc "Clear search highlight" "s c" #'evil-ex-nohighlight
  :leader "j" #'evilem-motion-next-line
  :leader "k" #'evilem-motion-previous-line
+ :leader "fw" #'find-file-other-window
  )
 
 (map!
