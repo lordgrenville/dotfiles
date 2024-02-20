@@ -164,8 +164,8 @@
            #'turn-off-smartparens-mode
            'org-fragtog-mode)
 
-(defun my/query-fixup-tool ()
-  "Replace in either the region or the buffer and copy to clipboard"
+(defun my/query-fixup-tool (&optional project)
+  "Replace in either the region or the buffer and copy to clipboard. Defaults to migration or production, can also give a project name"
   (interactive)
   (let (
         (begin (if (region-active-p) (point) (point-min)))
@@ -176,7 +176,8 @@
     (yank)
     (replace-string-in-region "PROJECTID_REPLACE" "anzu-179515" (point-min))
     (let (
-          (replacement (if (y-or-n-p "Replace with migration?") "migration" "production"))
+          ;; if project is null (the default, so can mean it was not supplied) then use y-or-n-p
+          (replacement (if project project (if (y-or-n-p "Replace with migration?") "migration" "production")))
           )
       (replace-string-in-region "DATASET_REPLACE" replacement (point-min)))
     (kill-region (point-min) (point-max)))
