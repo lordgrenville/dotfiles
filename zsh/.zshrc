@@ -54,6 +54,8 @@ alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
 alias open="xdg-open"
 alias noise="play -q -c 2 -n -t alsa synth brownnoise band -n 1600 1500 tremolo .1 30 &"
+# get current branch name
+alias branch="git rev-parse --abbrev-ref HEAD | tr -d '\n'"
 
 bindkey "^[f" forward-word
 bindkey "^[b" backward-word
