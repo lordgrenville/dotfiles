@@ -79,10 +79,12 @@ fi
 # unzip quietly, then (recursive, case-insensitive) grep for first argument
 book () {
 cd ~/Downloads
-if [ *(om[1]) != "foo" ]; then
-    cp *(om[1]) foo.zip
+# if foo/ doesn't exist, then copy the latest epub in Downloads to foo.zip and unzip it to there
+# om = order by modified, get the first
+if [ ! -d "foo" ]; then
+    cp *.epub(.om[1]) foo.zip
+    unzip -qq -o foo.zip -d foo/
 fi
-unzip -qq -o foo.zip -d foo/
 cd foo/
 grep --color=always -RIi $1 .
 }
