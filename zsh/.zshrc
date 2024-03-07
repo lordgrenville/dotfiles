@@ -75,6 +75,16 @@ elif  [ "$1" = "josh-scadafence" ]; then
 fi
 } 
 
+# lessons learned from writing this:
+# - some fancy jq (read in an array of large objects, find one that matches a condition, get it and extract a few fields
+# - string interpolation in zsh - can't use arg ($1) directly, must give it another name
+# - have to use double quotes, not single
+# - if you want to use quotes inside the quotes, then must escape with backslash
+camp () {
+    id=$1
+    jq ".data | map(select(._id==\""${id}"\"))[0] | .settings.platforms, .settings.cc, .ppu" < all_camps.json
+}
+
 # quick search downloaded epub: unzip latest file in Downloads (if not already there)
 # unzip quietly, then (recursive, case-insensitive) grep for first argument
 book () {
