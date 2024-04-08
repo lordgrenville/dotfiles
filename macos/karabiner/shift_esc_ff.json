@@ -1,0 +1,29 @@
+  {
+    "description": "Disable shift-escape in Firefox",
+    "manipulators": [
+      {
+        "conditions": [
+          {
+            "bundle_identifiers": [
+              "^org\\.mozilla\\.firefox$"
+            ],
+            "type": "frontmost_application_if"
+          }
+        ],
+        "from": {
+          "key_code": "left_shift",
+          "modifiers": {
+            "mandatory": [
+              "caps_lock"
+            ]
+          }
+        },
+        "to": [
+          {
+            "key_code": "vk_none"
+          }
+        ],
+        "type": "basic"
+      }
+    ]
+  }
