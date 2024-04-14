@@ -57,14 +57,22 @@
     (insert res))
   )
 
+(defun select-around-word ()
+  "If there is no active region, define the region as the word nearest to the point"
+    (unless (use-region-p)
+      (push-mark (point))
+      (backward-sexp)
+      (mark-sexp)
+      (exchange-point-and-mark)))
+
 (defun text-to-wikipedia-link (string)
   "Convert a string to a link to English Wikipedia"
-        (concat "[[https://en.wikipedia.org/wiki/" (subst-char-in-string ?  ?_ string) "][" string "]]"))
+  (concat "[[https://en.wikipedia.org/wiki/" (capitalize (subst-char-in-string ?  ?_ string)) "][" string "]]"))
 
 (defun my/org-insert-wikipedia-link ()
   (interactive)
+  (select-around-word)
   (apply-to-region 'text-to-wikipedia-link))
-
 
 (defun my/move-and-fold-toggle ()
   (interactive)
