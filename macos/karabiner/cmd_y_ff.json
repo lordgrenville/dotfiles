@@ -1,0 +1,29 @@
+{
+    "description": "Disable Cmd-y in Firefox",
+    "manipulators": [
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^org\\.mozilla\\.firefox$"
+                    ],
+                    "type": "frontmost_application_if"
+                }
+            ],
+            "from": {
+                "key_code": "y",
+                "modifiers": {
+                    "mandatory": [
+                        "command"
+                    ]
+                }
+            },
+            "to": [
+                {
+                    "key_code": "vk_none"
+                }
+            ],
+            "type": "basic"
+        }
+    ]
+}
