@@ -6,14 +6,13 @@
     <string>update.kevin</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/josh/miniforge3/envs/myenv/bin/python</string>
-        <string>/Users/josh/Documents/dev/make_rss_kevin_lewis/scrape_kevin.py</string>
+        <string>/Users/joshf/scripts/run.sh</string>
     </array>
     <key>StartCalendarInterval</key>
     <array>
     <dict>
             <key>Weekday</key>
-            <integer>4</integer>
+            <integer>3</integer>
             <key>Hour</key>
             <integer>11</integer>
             <key>Minute</key>
@@ -21,12 +20,16 @@
     </dict>
     <dict>
             <key>Weekday</key>
-            <integer>0</integer>
+            <integer>1</integer>
             <key>Hour</key>
             <integer>11</integer>
             <key>Minute</key>
             <integer>0</integer>
     </dict>
     </array>
+        <key>StandardOutPath</key>
+        <string>/Users/joshf/kevin.log</string>
+        <key>StandardErrorPath</key>
+        <string>/Users/joshf/kevin.log</string>
 </dict>
 </plist>

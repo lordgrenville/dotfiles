@@ -1,7 +1,6 @@
 # uncomment at top and bottom for profiling
 # zmodload zsh/zprof
 export LANG="en_US.UTF-8"
-# export JAVA_HOME="/Users/josh/jdk-17.0.1.jdk/Contents/Home"
 export EDITOR="/usr/bin/vi"
 export BAT_THEME="Sublime Snazzy"
 
@@ -32,8 +31,18 @@ unsetopt correct_all
 setopt correct  # don't correct argument names
 autoload -U select-word-style
 select-word-style bash
+
+eval "$(brew shellenv)"
+
+autoload -Uz compinit
+if [ $(date +'%j') != $(stat -f '%Sm' -t '%j' ~/.zcompdump) ]; then
+  compinit
+else
+  compinit -C
+fi
+
 # case-insensitive autocomplete if no match on case
-autoload -Uz compinit && compinit
+# autoload -Uz compinit && compinit
 zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*:*:-command-:*:*' ignored-patterns 'down-case-word-match'
 
@@ -50,10 +59,7 @@ PYTHONSTARTUP=~/.pythonrc
 alias ll="exa --color auto --all --group-directories-first --long --group --header --modified --sort=name --time-style=long-iso --classify"
 alias ...="cd ../.."
 alias ....="cd ../../.."
-alias pbcopy='xclip -selection clipboard'
-alias pbpaste='xclip -selection clipboard -o'
-alias open="xdg-open"
-alias noise="play -q -c 2 -n -t alsa synth brownnoise band -n 1600 1500 tremolo .1 30 &"
+alias noise="play -q -c 2 -n synth brownnoise band -n 1600 1500 tremolo .1 30 &"
 # get current branch name
 alias branch="git rev-parse --abbrev-ref HEAD | tr -d '\n'"
 
@@ -108,17 +114,12 @@ grep --color=always -RIi $1 .
 }
 
 # search a directory with files you don't have permission to, ignore noise
-ffind() {
-    find . -name $1 2>&1 | grep -v "Permission denied" | grep -v "Operation not permitted"
-}
+# ffind() {
+#     find . -name $1 2>&1 | grep -v "Permission denied" | grep -v "Operation not permitted"
+# }
 
-source /usr/share/doc/fzf/examples/key-bindings.zsh
-
-# create venv, silently update pip
-create_env() {/usr/bin/python3 -m venv --upgrade-deps temp_env/; source temp_env/bin/activate}
-# create_env() {python3 -m venv temp_env/; source temp_env/bin/activate; echo 'Updating pip...'; $(which python3.9) -m pip install --upgrade pip 1>/dev/null}
-
-destroy_env() {deactivate && rm -rf temp_env/}
+# copy this useful task to clipboard for DAPR. -n means no newline
+# dapr() {echo -n "T184151398" | pbcopy}
 
 tm() {
 tmux a -t $(tmux list-sessions | sed -E 's/:.*$//' | grep -v \"^$(tmux display-message -p '#S')\$\" | fzf)
@@ -127,15 +128,26 @@ tmux a -t $(tmux list-sessions | sed -E 's/:.*$//' | grep -v \"^$(tmux display-m
 eval "$(starship init zsh)"
 
 # plugins
-source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /usr/share/zsh-abbr/zsh-abbr.zsh
+source /opt/homebrew/opt/zsh-syntax-highlighting/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /opt/homebrew/opt/zsh-autosuggestions/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+# source /opt/homebrew/opt/zsh-abbr/share/zsh-abbr/zsh-abbr.zsh
 
-fpath=( /Users/josh/misc/gitfast $fpath )
+source "${HOME}/.iterm2_shell_integration.zsh"
+
+# [ -f "/Users/joshf/.ghcup/env" ] && . "/Users/joshf/.ghcup/env" # ghcup-env
+export PYENV_ROOT="$HOME/.pyenv"
+
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+py() {
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+    pyenv activate my_env312
+
+}
+
 # zprof
 
-# when opening new shells in tmux sessions, don't switch dirs and obviously don't nest my TMUX session
-if !  [ -n "$TMUX" ];  then
-  tmux attach -t guest
-  cd /mnt/data1/FIEF
-fi
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# [ -s /Users/joshf/.nvm/nvm.sh ] && \. /Users/joshf/.nvm/nvm.sh && [ -s /Users/joshf/.nvm/bash_completion ] && \. /Users/joshf/.nvm/bash_completion

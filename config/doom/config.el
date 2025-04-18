@@ -1,53 +1,64 @@
 ;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
 (setq
-  user-full-name "Josh Friedlander"
-  user-mail-address "joshuatfriedlander@gmail.com"
-  doom-font (font-spec :family "Fira Mono for Powerline" :size 14)
-  doom-variable-pitch-font (font-spec :family "Liberation Mono" :size 15)
-  doom-variable-pitch-font (font-spec :family "Meslo LG M DZ for Powerline" :size 15)
-  doom-theme-treemacs-theme "doom-colors"
-  delete-by-moving-to-trash t
-  undo-limit 9999999
-  evil-want-fine-undo t
-  auto-save-visited-mode t
-  scroll-margin 2
-  lsp-pylsp-server-command "/Users/josh/miniconda3/envs/pronto/bin/pylsp"
-  org-directory "~/Dropbox/org/"
-  ;; org-hugo-base-dir "~/Documents/dev/blog/athena/"
-  projectile-project-search-path '("~/Documents/")
-  ; This determines the style of line numbers in effect. If set to `nil', line
-  ; numbers are disabled. For relative line numbers, set this to `relative'.
-  display-line-numbers-type 'visual
-  lsp-modeline-diagnostics-enable nil
-  ;; display time, and don't show me the system load, which makes no sense to me
-  display-time-default-load-average 'nil
-  dired-kill-when-opening-new-dired-buffer t
-  +ivy-buffer-preview t
-  ; in org-mode, TAB key cycles headings even inside text block, rather than emulating real tab
-  ; (matching the behaviour in Magit)
-  org-cycle-emulate-tab 'nil
-  comint-scroll-to-bottom-on-output t
-  ob-mermaid-cli-path "/opt/homebrew/bin/mmdc"
-  ;; hide wrapping punctuation in org mode
-  org-hide-emphasis-markers t
-  ; ignore org-mode and others in flycheck (syntax checker)
-  flycheck-global-modes '(not gfm-mode forge-post-mode gitlab-ci-mode dockerfile-mode Org-mode org-mode)
-  ; does this work? if not use M-x ispell-change-dict
-  ;; ispell-dictionary "en_ZA"
-  ;; ispell-hunspell-dict-paths-alist '(("en_GB" . ("/Library/Spelling/en_GB.aff")))
-  ;; ispell-local-dictionary-alist '(("en_GB" "[A-Za-z]" "[^A-Za-z]" "['’]" t ("-d en_GB") nil utf-8))
-  ispell-local-dictionary "en_GB"
-  ;; ispell-program-name "aspell"
-  ;; ispell-extra-args '("--sug-mode=ultra" "--lang=en_ZA")
-  ;; org-todo-keywords '((sequence "TODO" "DONE"))
-  ; for mac with external keyboard: https://github.com/hlissner/doom-emacs/issues/3952#issuecomment-716608614
-  ns-right-option-modifier 'left
-  ;; hides top menu bar on Gnome
-  ; default-frame-alist '((undecorated . t))
-  )
+ user-full-name "Josh Friedlander"
+ user-mail-address "joshuatfriedlander@gmail.com"
+ doom-font (font-spec :family "Fira Mono for Powerline" :size 14)
+ doom-variable-pitch-font (font-spec :family "Liberation Mono for Powerline" :size 15)
+ doom-variable-pitch-font (font-spec :family "Meslo LG M DZ for Powerline" :size 15)
+ doom-symbol-font (font-spec :family "Apple Color Emoji")
+ ;; doom-symbol-font (font-spec :family "Apple Color Emoji")
+ doom-theme-treemacs-theme "doom-colors"
+ delete-by-moving-to-trash t
+ undo-limit 9999999
+ evil-want-fine-undo t
+ auto-save-visited-mode t
+ scroll-margin 2
+ org-directory "~/Documents/org/"
+ ;; org-hugo-base-dir "~/Documents/dev/blog/athena/"
+ projectile-project-search-path '("~/Documents/")
+                                        ; This determines the style of line numbers in effect. If set to `nil', line
+                                        ; numbers are disabled. For relative line numbers, set this to `relative'.
+ display-line-numbers-type 'visual
+ lsp-modeline-diagnostics-enable nil
+ ;; display time, and don't show me the system load, which makes no sense to me
+ display-time-default-load-average 'nil
+ dired-kill-when-opening-new-dired-buffer t
+ +ivy-buffer-preview t
+                                        ; in org-mode, TAB key cycles headings even inside text block, rather than emulating real tab
+                                        ; (matching the behaviour in Magit)
+ org-cycle-emulate-tab 'nil
+ comint-scroll-to-bottom-on-output t
+ ob-mermaid-cli-path "/opt/homebrew/bin/mmdc"
+ ;; hide wrapping punctuation in org mode
+ org-hide-emphasis-markers t
+                                        ; ignore org-mode and others in flycheck (syntax checker)
+ flycheck-global-modes '(not gfm-mode forge-post-mode gitlab-ci-mode dockerfile-mode Org-mode org-mode)
+ ispell-dictionary "en_ZA"
+ ispell-hunspell-dict-paths-alist '(("en_ZA" . ("/Users/joshf/Library/Spelling/en_ZA.aff")))
+                                        ; for mac with external keyboard: https://github.com/hlissner/doom-emacs/issues/3952#issuecomment-716608614
+ ns-right-option-modifier 'left
+ ;; old style org folding to fix search bug...
+ org-fold-core-style 'overlays
+
+ org-modern-fold-stars '(("►" . "▼") ("▷" . "▽") ("⏵" . "⏷") ("▹" . "▿") ("▸" . "▾"))
+ ;; org-modern-fold-stars '(("◉" . "◉") ("○" ."○" ) ("✸" ."✸" ) ("✿". "✿") ("▸" . "▾"))
+
+ org-capture-templates
+ '(
+   ("j" "Work Log Entry"
+    entry (file+datetree +org-capture-journal-file)
+    "* %?"
+    ;; :empty-lines-before 1
+    )
+   )
+
+ )
 
 (display-time)
+
+; ...in addition to this (see https://github.com/doomemacs/doomemacs/issues/6478)
+(evil-select-search-module 'evil-search-module 'evil-search)
 
 (defun apply-to-region (func)
   (unless (use-region-p)
@@ -88,7 +99,7 @@
   (apply-to-region 'number-to-whatsapp-link))
 
 (defun my/fix-mac-quotes ()
-  "Replace those badly named 'smart quotes' Apple loves with something simpler"
+  ;;Replace those badly named 'smart quotes' Apple loves with something simpler
   (interactive)
   (replace-string-in-region "“" "\"" (point-min))
   (replace-string-in-region "”" "\"" (point-min))
@@ -124,13 +135,33 @@
 
 (map!
  (:after evil
-  :n "z=" #'flyspell-correct-word-before-point
+  :n "z=" #'flyspell-correct-at-point
   :n "n"  #'next-search-and-centre)
   :n "C-t" nil
  ;; overrides the default of "correct before point", which has a nice
  ;; GUI popup but crashes Emacs. Use C-o to get option to add/accept
  ;; :map evil-normal-state-map "z=" #'flyspell-correct-wrapper
  )
+
+(defun my/find-and-fix-spelling ()
+  "Go to next flyspell error and suggest fixes"
+  (interactive)
+  (evil-next-flyspell-error)
+  (flyspell-correct-at-point))
+
+(defun my/empty-sql-buffer ()
+  "Pop up an empty SQL mode buffer and dump clipboard in it"
+  (interactive)
+  (let ((buf (generate-new-buffer "sql-buffer")))
+    (switch-to-buffer buf)
+    (sql-mode)
+    (yank))
+  )
+
+(defun my/edit-downloads ()
+  "Open Downloads folder in dired"
+  (interactive)
+  (dired "/Users/joshf/Downloads"))
 
 (defun next-search-and-centre ()
   "Run `evil-ex-search-next` and `evil-scroll-line-to-center` in sequence."
@@ -157,40 +188,45 @@
   (map! :localleader
         :map org-mode-map
         (:desc "Make Wikipedia link" "w" #'my/org-insert-wikipedia-link))
+  ;; (setq company-backends '(:separate company-dabbrev company-yasnippet company-ispell))
   (map!
    (
     :n "<down>"   #'evil-next-visual-line
     :n "<up>"   #'evil-previous-visual-line
     :n "j"   #'evil-next-visual-line
     :n "k"   #'evil-previous-visual-line
+    :leader :desc "Fix next typo" "r" #'my/find-and-fix-spelling
+    :leader :desc "downloads folder" "oD" #'my/edit-downloads
+    :leader :desc "empty SQL buffer" "nb" #'my/empty-sql-buffer
     )
    ))
 
 (after! treemacs
   (setq treemacs-git-mode nil))
 
-(add-hook! 'org-mode-hook
-           #'turn-off-smartparens-mode
-           'org-fragtog-mode)
+;; (add-hook! 'org-mode-hook
+;;            ;; #'turn-off-smartparens-mode
+;;            'org-fragtog-mode)
 
-(defun my/query-fixup-tool (&optional project)
-  "Replace in either the region or the buffer and copy to clipboard. Defaults to migration or production, can also give a project name"
-  (interactive)
-  (let (
-        (begin (if (region-active-p) (point) (point-min)))
-        (end   (if (region-active-p) (mark) (point-max)))
-        )
-    (kill-ring-save begin end))
-  (with-temp-buffer
-    (yank)
-    (replace-string-in-region "PROJECTID_REPLACE" "anzu-179515" (point-min))
-    (let (
-          ;; if project is null (the default, so can mean it was not supplied) then use y-or-n-p
-          (replacement (if project project (if (y-or-n-p "Replace with migration?") "migration" "production")))
-          )
-      (replace-string-in-region "DATASET_REPLACE" replacement (point-min)))
-    (kill-region (point-min) (point-max)))
-  )
+;; (defun my/query-fixup-tool (&optional project)
+;;   ;;Replace in either the region or the buffer and copy to clipboard.
+;;   ;;Defaults to migration or production, can also give a project name
+;;   (interactive)
+;;   (let (
+;;         (begin (if (use-region-p) (point) (point-min)))
+;;         (end   (if (use-region-p) (mark) (point-max)))
+;;         )
+;;     (kill-ring-save begin end))
+;;   (with-temp-buffer
+;;     (yank)
+;;     (replace-string-in-region "PROJECTID_REPLACE" "anzu-179515" (point-min))
+;;     (let (
+;;           ;; if project is null (the default, so can mean it was not supplied) then use y-or-n-p
+;;           (replacement (if project project (if (y-or-n-p "Replace with migration?") "migration" "production")))
+;;           )
+;;       (replace-string-in-region "DATASET_REPLACE" replacement (point-min)))
+;;     (kill-region (point-min) (point-max)))
+;;   )
 
 ; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
 ;; (setq-hook! '(text-mode-hook) fill-column 145)
@@ -204,21 +240,21 @@
 (if (< 50 (count-lines (point-min) (point-max))) (+fold/close-all))
 
 (add-hook! python-mode
-  (+fold/close-all)         ; like in VS Code (does this work tho?)
-  ;; (set-fill-column 120)
-  ;; (display-fill-column-indicator-mode)
-  (conda-env-activate "pronto")
-  ;; (pyvenv--add-dirs-to-PATH '("/home/josh/Documents/work/scadafence/sf-post-processing", "/home/josh/Documents/work/scadafence/utils/python",
-  ;;                             "/home/josh/Documents/work/scadafence/integration-test"))
-)
+           ; (+fold/close-all)         ; like in VS Code (does this work tho?)
+           (set-fill-column 120)
+           (display-fill-column-indicator-mode)
+           (python-ts-mode)
+           ;; (eglot-ensure)
+           )
+
 
 (setq-hook! 'python-mode-hook
-  ; pylsp formatter doesn't work, overrride it manually
-  +format-with 'black
-  ; pylsp formatter doesn't work, overrride it manually
+  ;; pylsp formatter doesnt work, override it manually
+  ;; +format-with 'black
   lsp-pylsp-plugins-pylint-enabled t
   lsp-pylsp-plugins-pydocstyle-enabled nil
-  lsp-pylsp-plugins-flake8-config "/Users/josh/.flake8"
+  python-shell-virtualenv-root "my_env312"
+  ; lsp-pylsp-plugins-flake8-config "/Users/josh/.flake8"
   )
 
 ; don't autolaunch spell-fu
@@ -254,6 +290,7 @@
   (setq-local doom-modeline-buffer-encoding
               (unless (or (eq buffer-file-coding-system 'utf-8-unix)
                           (eq buffer-file-coding-system 'utf-8)))))
+
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
