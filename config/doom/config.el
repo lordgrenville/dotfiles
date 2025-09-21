@@ -7,7 +7,6 @@
  doom-variable-pitch-font (font-spec :family "Liberation Mono for Powerline" :size 15)
  doom-variable-pitch-font (font-spec :family "Meslo LG M DZ for Powerline" :size 15)
  doom-symbol-font (font-spec :family "Apple Color Emoji")
- ;; doom-symbol-font (font-spec :family "Apple Color Emoji")
  doom-theme-treemacs-theme "doom-colors"
  delete-by-moving-to-trash t
  undo-limit 9999999
@@ -23,6 +22,9 @@
  lsp-modeline-diagnostics-enable nil
  ;; display time, and don't show me the system load, which makes no sense to me
  display-time-default-load-average 'nil
+ ;; doom-modeline-hud t
+ ;; doom-modeline-battery t
+ ;; doom-modeline-time-icon t
  dired-kill-when-opening-new-dired-buffer t
  +ivy-buffer-preview t
                                         ; in org-mode, TAB key cycles headings even inside text block, rather than emulating real tab
@@ -38,26 +40,35 @@
  ispell-hunspell-dict-paths-alist '(("en_ZA" . ("/Users/joshf/Library/Spelling/en_ZA.aff")))
                                         ; for mac with external keyboard: https://github.com/hlissner/doom-emacs/issues/3952#issuecomment-716608614
  ns-right-option-modifier 'left
- ;; old style org folding to fix search bug...
- org-fold-core-style 'overlays
-
- org-modern-fold-stars '(("►" . "▼") ("▷" . "▽") ("⏵" . "⏷") ("▹" . "▿") ("▸" . "▾"))
- ;; org-modern-fold-stars '(("◉" . "◉") ("○" ."○" ) ("✸" ."✸" ) ("✿". "✿") ("▸" . "▾"))
-
- org-capture-templates
- '(
-   ("j" "Work Log Entry"
-    entry (file+datetree +org-capture-journal-file)
-    "* %?"
-    ;; :empty-lines-before 1
-    )
-   )
-
  )
 
 (display-time)
+(defun my/keyboard-layout ()
+  (if (string-match-p "Hebrew"
+                      (shell-command-to-string "defaults read ~/Library/Preferences/com.apple.HIToolbox.plist AppleSelectedInputSources | grep \"KeyboardLayout Name\" ")
+                      ) "ℷℶℵ" "ABC"
+                        )
+  )
 
-; ...in addition to this (see https://github.com/doomemacs/doomemacs/issues/6478)
+(doom-modeline-def-segment keyboard-layout
+  "Show currently active keyboard language"
+  (when (doom-modeline--segment-visible 'keyboard-layout) (concat (doom-modeline-wspc) (my/keyboard-layout))
+        ))
+
+;; Define your custom doom-modeline
+(doom-modeline-def-modeline 'my-simple-line
+  '(bar window-state workspace-name window-number modals matches follow buffer-info buffer-position word-count selection-info)
+  '(keyboard-layout misc-info project-name persp-name battery minor-modes input-method indent-info buffer-encoding major-mode process check time))
+
+;; Set default mode-line
+(add-hook 'doom-modeline-mode-hook
+          (lambda ()
+            (doom-modeline-set-modeline 'my-simple-line 'default)))
+
+;; Configure other mode-lines based on major modes
+(add-to-list 'doom-modeline-mode-alist '(org-mode . my-simple-line))
+
+;; ...in addition to this (see https://github.com/doomemacs/doomemacs/issues/6478)
 (evil-select-search-module 'evil-search-module 'evil-search)
 
 (defun apply-to-region (func)
@@ -70,11 +81,11 @@
 
 (defun select-around-word ()
   "If there is no active region, define the region as the word nearest to the point"
-    (unless (use-region-p)
-      (push-mark (point))
-      (backward-sexp)
-      (mark-sexp)
-      (exchange-point-and-mark)))
+  (unless (use-region-p)
+    (push-mark (point))
+    (backward-sexp)
+    (mark-sexp)
+    (exchange-point-and-mark)))
 
 (defun text-to-wikipedia-link (string)
   "Convert a string to a link to English Wikipedia"
@@ -116,12 +127,12 @@
   (interactive)
   (evil-previous-line)
   (while (or (= (char-after (point)) 32)
-            (= (char-after (point)) 10))
+             (= (char-after (point)) 10))
     (evil-previous-line)))
 
-; in doom instead of define-key you have a  macro map!
-; you can prepend :leader, or :en for emacs, normal mode etc
-; more at :h map!
+                                        ; in doom instead of define-key you have a  macro map!
+                                        ; you can prepend :leader, or :en for emacs, normal mode etc
+                                        ; more at :h map!
 (map!
  :n "]s"   #'evil-next-flyspell-error
  :n "[s"   #'evil-prev-flyspell-error
@@ -137,7 +148,7 @@
  (:after evil
   :n "z=" #'flyspell-correct-at-point
   :n "n"  #'next-search-and-centre)
-  :n "C-t" nil
+ :n "C-t" nil
  ;; overrides the default of "correct before point", which has a nice
  ;; GUI popup but crashes Emacs. Use C-o to get option to add/accept
  ;; :map evil-normal-state-map "z=" #'flyspell-correct-wrapper
@@ -157,6 +168,25 @@
     (sql-mode)
     (yank))
   )
+
+(defun my/scroll-all-buffers-to-fill-screen ()
+  (interactive)
+  (if (eq (length (window-list)) 1) (evil-window-vsplit)
+    ;; (evil-window-up 1)
+    )
+  (find-file "/Users/joshf/Documents/work_kbase.org")
+  (+org/open-all-folds)
+  (evil-scroll-line-to-bottom (line-number-at-pos))
+  (evil-window-right 1)
+  (find-file "/Users/joshf/Documents/org/journal.org")
+  (+org/open-all-folds)
+  (evil-scroll-line-to-bottom (line-number-at-pos))
+  (evil-scroll-line-down 20)
+  )
+
+(defun my/org-capture ()
+  (interactive)
+  (org-capture nil "k"))
 
 (defun my/edit-downloads ()
   "Open Downloads folder in dired"
@@ -181,7 +211,20 @@
   (evil-scroll-line-to-center nil))
 
 (after! org
-  (setq org-startup-folded t)
+  (setq
+   org-startup-folded t
+   ;; old style org folding to fix search bug...
+   org-fold-core-style 'overlays
+   org-modern-fold-stars '(("►" . "▼") ("▷" . "▽") ("⏵" . "⏷") ("▹" . "▿") ("▸" . "▾"))
+   org-capture-templates '(
+                           ("k" "Work Log Entry"
+                            entry (file+datetree +org-capture-journal-file)
+                            "* %?"
+                            ;; :empty-lines-before 1
+                            ))
+   )
+
+
   (map! :localleader
         :map org-mode-map
         (:desc "Insert source code block" "i" 'org-insert-structure-template))
@@ -198,8 +241,12 @@
     :leader :desc "Fix next typo" "r" #'my/find-and-fix-spelling
     :leader :desc "downloads folder" "oD" #'my/edit-downloads
     :leader :desc "empty SQL buffer" "nb" #'my/empty-sql-buffer
+    :leader :desc "Org capture work thought" "x" #'my/org-capture
+    :leader :desc "Set things up the way I like" "d" #'my/scroll-all-buffers-to-fill-screen
     )
    ))
+
+(global-unset-key (kbd "s-t"))          ;; don't open a new project with Cmd-t
 
 (after! treemacs
   (setq treemacs-git-mode nil))
@@ -228,7 +275,7 @@
 ;;     (kill-region (point-min) (point-max)))
 ;;   )
 
-; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
+                                        ; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
 ;; (setq-hook! '(text-mode-hook) fill-column 145)
 
 ;; (after! treemacs
@@ -240,7 +287,7 @@
 (if (< 50 (count-lines (point-min) (point-max))) (+fold/close-all))
 
 (add-hook! python-mode
-           ; (+fold/close-all)         ; like in VS Code (does this work tho?)
+                                        ; (+fold/close-all)         ; like in VS Code (does this work tho?)
            (set-fill-column 120)
            (display-fill-column-indicator-mode)
            (python-ts-mode)
@@ -254,27 +301,27 @@
   lsp-pylsp-plugins-pylint-enabled t
   lsp-pylsp-plugins-pydocstyle-enabled nil
   python-shell-virtualenv-root "my_env312"
-  ; lsp-pylsp-plugins-flake8-config "/Users/josh/.flake8"
+                                        ; lsp-pylsp-plugins-flake8-config "/Users/josh/.flake8"
   )
 
-; don't autolaunch spell-fu
+                                        ; don't autolaunch spell-fu
 (remove-hook 'text-mode-hook #'spell-fu-mode)
 (add-hook 'text-mode-hook #'flyspell-mode)
 
 ;; (dolist (mode '(
-                   ;; term-mode
-                   ;; vterm-mode
-                   ;; help-mode
-                   ;; shell-mode
-                   ;; dired-mode
-                   ;; wdired-mode
-                   ;; git-commit-mode
-                   ;; git-rebase-mode
-                   ;; ))
-  ;; (evil-set-initial-state mode 'emacs))
+;; term-mode
+;; vterm-mode
+;; help-mode
+;; shell-mode
+;; dired-mode
+;; wdired-mode
+;; git-commit-mode
+;; git-rebase-mode
+;; ))
+;; (evil-set-initial-state mode 'emacs))
 
 ;; stuff from Tecosaur, not major
-; show battery status in bottom right
+                                        ;; show battery status in bottom right
 (unless (equal "Battery status not available"
                (battery))
   (display-battery-mode 1))
@@ -299,10 +346,10 @@
   (require 'ox-hugo))
 
 (evil-define-key 'normal peep-dired-mode-map (kbd "<SPC>") 'peep-dired-scroll-page-down
-                                             (kbd "C-<SPC>") 'peep-dired-scroll-page-up
-                                             (kbd "<backspace>") 'peep-dired-scroll-page-up
-                                             (kbd "j") 'peep-dired-next-file
-                                             (kbd "k") 'peep-dired-prev-file)
+  (kbd "C-<SPC>") 'peep-dired-scroll-page-up
+  (kbd "<backspace>") 'peep-dired-scroll-page-up
+  (kbd "j") 'peep-dired-next-file
+  (kbd "k") 'peep-dired-prev-file)
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 
 (with-eval-after-load 'treemacs
@@ -311,25 +358,28 @@
   (push #'treemacs-ignore-pycache treemacs-ignored-file-predicates))
 
 (setq counsel-find-file-ignore-regexp
-        (concat
-         ;; File names beginning with # or .
-         "\\(?:^[#.]\\)\\|\\(?:[#~]$\\)\\|\\(?:^Icon?\\)"
-         ;; File names ending with # or ~
-         "__pycache__"))
+      (concat
+       ;; File names beginning with # or .
+       "\\(?:^[#.]\\)\\|\\(?:[#~]$\\)\\|\\(?:^Icon?\\)"
+       ;; File names ending with # or ~
+       "__pycache__"))
 
-; Here are some additional functions/macros that could help you configure Doom:
-;
-; - `load!' for loading external *.el files relative to this one
-; - `use-package' for configuring packages
-; - `after!' for running code after a package has loaded
-; - `add-load-path!' for adding directories to the `load-path', relative to
-;   this file. Emacs searches the `load-path' when you load packages with
-;   `require' or `use-package'.
-; - `map!' for binding new keys
-;
-; To get information about any of these functions/macros, move the cursor over
-; the highlighted symbol at press 'K' (non-evil users must press 'C-c g k').
-; This will open documentation for it, including demos of how they are used.
+;; (emms-all)
+;; (setq emms-player-list '(emms-player-mpv)
+;;       emms-info-functions '(emms-info-native))
+                                        ; Here are some additional functions/macros that could help you configure Doom:
+                                        ;
+                                        ; - `load!' for loading external *.el files relative to this one
+                                        ; - `use-package' for configuring packages
+                                        ; - `after!' for running code after a package has loaded
+                                        ; - `add-load-path!' for adding directories to the `load-path', relative to
+                                        ;   this file. Emacs searches the `load-path' when you load packages with
+                                        ;   `require' or `use-package'.
+                                        ; - `map!' for binding new keys
+                                        ;
+                                        ; To get information about any of these functions/macros, move the cursor over
+                                        ; the highlighted symbol at press 'K' (non-evil users must press 'C-c g k').
+                                        ; This will open documentation for it, including demos of how they are used.
 
-; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
-; they are implemented.
+                                        ; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
+                                        ; they are implemented.
