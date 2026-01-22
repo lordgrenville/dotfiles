@@ -59,7 +59,8 @@ PYTHONSTARTUP=~/.pythonrc
 alias ll="exa --color auto --all --group-directories-first --long --group --header --modified --sort=name --time-style=long-iso --classify"
 alias ...="cd ../.."
 alias ....="cd ../../.."
-alias noise="play -q -c 2 -n synth brownnoise band -n 1600 1500 tremolo .1 30 &"
+# alias noise="play -q -c 2 -n synth brownnoise band -n 1600 1500 tremolo .1 30 &"
+alias noise='play -q -m "|sox -c 2 -n -p synth brownnoise band -n 1600 1500 tremolo .1 30" "|sox /Users/joshf/Music/adhd_focus.opus -p vol 10" &'
 # get current branch name
 alias branch="git rev-parse --abbrev-ref HEAD | tr -d '\n'"
 
@@ -76,7 +77,45 @@ source <(fzf --zsh)
 # source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
 
 doom() {
-echo "DISABLING SSL ver" && git config --global http.sslVerify false && /Users/joshf/.emacs.d/bin/doom "$1" && git config --global http.sslVerify true && echo "ENABLING SSL ver"
+    echo "DISABLING SSL ver" && \
+    git config --global http.sslVerify false && \
+    /Users/joshf/.emacs.d/bin/doom "$1" && \
+    git config --global http.sslVerify true && \
+    echo "ENABLING SSL ver" && \
+    echo "fixing reader-mode" && \
+    cd ~/.emacs.d/.local/straight && \
+    cp repos/emacs-reader/render-core.dylib build-30.2/reader/ && \
+    cd -
+}
+
+# wut () {
+#     jf graphql --query "$(<~/graphql/wut.graphql)" --variables "{\"word\": \"$1\"}" | jq -r '.wut_definition.definitions | join("\n\n\n OR ")'
+# }
+
+
+# noms () {
+#     cafe="1760162784846384"  # Shuk Hatikvah
+#     if [ "$1" = "lunch" ]; then
+#         cafe="536627511629417"  # Shuk Hacarmel
+#     fi
+#     jf graphql --query "$(<~/graphql/noms.graphql)" --variables "{\"culinary_cafe_id\": \"$cafe\",\"timestamp\":$(date +%s)}" | jq '{
+#               Cafe: .culinary_cafe_query.name,
+#               Date: .culinary_cafe_query.cafe_next_available_menu_v2.formatted_date,
+#               Opens: .culinary_cafe_query.cafe_next_available_menu_v2.formatted_service_start_time,
+#               Closes: .culinary_cafe_query.cafe_next_available_menu_v2.formatted_service_end_time,
+#               Noms: (
+#                 .culinary_cafe_query.cafe_next_available_menu_v2.menu_foodcategory_query.edges
+#                 | map(.node.foodcard_query.edges | map(.node.name))
+#                 | flatten
+#               )
+#             }'
+# }
+
+
+
+whisper () {
+    filename=$1
+    ffmpeg -i $1 -acodec pcm_s16le -ac 1 -ar 16000 ${filename%.*}.wav && whisper-cli -m /Users/joshf/Documents/pers/whisper.cpp/models/ggml-large-v3.bin -l en --output-txt -nt -f ${filename%.*}.wav | tee ${filename%.*}.txt
 }
 
 # switch_git_cred () {
@@ -151,3 +190,36 @@ py() {
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 # [ -s /Users/joshf/.nvm/nvm.sh ] && \. /Users/joshf/.nvm/nvm.sh && [ -s /Users/joshf/.nvm/bash_completion ] && \. /Users/joshf/.nvm/bash_completion
+wut () {
+  jf graphql --query "$( <~/graphql/wut.graphql )" --variables "{\"word\": \"$1\"}" | jq -r '.wut_definition.definitions | join("\n\n\n OR ")'
+}
+
+noms () {
+    if [ "$1" = "lunch" ]; then
+        cafe="536627511629417"  # Shuk Hacarmel
+    elif [ "$1" = "dessert" ]; then
+        cafe="479930794199377"  # Levinsky (not kosher, but kosher dessert)
+    else
+        cafe="1760162784846384"  # Shuk Hatikvah
+    fi
+
+    if [ "$1" = "dessert" ]; then
+        jq='.culinary_cafe_query.cafe_next_available_menu_v2.menu_foodcategory_query.edges | .[] | 
+            select(.node.food_category.name == "DESSERT" or .node.food_category.name == "Ice Cream") 
+            | .node.foodcard_query.edges[].node.name'
+    else
+        jq='{
+            Cafe: .culinary_cafe_query.name,
+            Date: .culinary_cafe_query.cafe_next_available_menu_v2.formatted_date,
+            Opens: .culinary_cafe_query.cafe_next_available_menu_v2.formatted_service_start_time,
+            Closes: .culinary_cafe_query.cafe_next_available_menu_v2.formatted_service_end_time,
+            Noms: (
+                .culinary_cafe_query.cafe_next_available_menu_v2.menu_foodcategory_query.edges
+                | map(.node.foodcard_query.edges | map(.node.name))
+                | flatten
+              )
+            }'
+    fi
+    jf graphql --query "$(<~/graphql/noms.graphql)" --variables "{\"culinary_cafe_id\": \"$cafe\",\"timestamp\":$(date +%s)}" | jq $jq
+}
+export PATH="/opt/homebrew/opt/jpeg/bin:$PATH"
