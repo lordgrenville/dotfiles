@@ -40,33 +40,59 @@
  ispell-hunspell-dict-paths-alist '(("en_ZA" . ("/Users/joshf/Library/Spelling/en_ZA.aff")))
                                         ; for mac with external keyboard: https://github.com/hlissner/doom-emacs/issues/3952#issuecomment-716608614
  ns-right-option-modifier 'left
+
+ browse-url-firefox-program "/Applications/Firefox.app/Contents/MacOS/firefox"
+ browse-url-browser-function 'browse-url-firefox
+
  )
 
 (display-time)
-(defun my/keyboard-layout ()
-  (if (string-match-p "Hebrew"
-                      (shell-command-to-string "defaults read ~/Library/Preferences/com.apple.HIToolbox.plist AppleSelectedInputSources | grep \"KeyboardLayout Name\" ")
-                      ) "ℷℶℵ" "ABC"
+
+;; (defface doom-modeline-keyboard-layout-face
+;;   '((t (:inherit doom-modeline-info)))
+;;   "Face for keyboard status."
+;;   :group 'doom-modeline-faces)
+
+
+(after! modeline
+
+
+
+        (defun my/keyboard-layout ()
+        (if (string-match-p "Hebrew"
+                        (shell-command-to-string "defaults read ~/Library/Preferences/com.apple.HIToolbox.plist AppleSelectedInputSources | grep \"KeyboardLayout Name\" ")
                         )
-  )
+        (doom-modeline-icon 'mdicon "nf-md-abjad_hebrew" "א" "Hebrew" :face 'nerd-icons-red)
+        (doom-modeline-icon 'mdicon "nf-md-alphabetical_variant" "A" "English" :face 'nerd-icons-red)
+        ;; "ℷℶℵ"
+        ;; "ABC"
+        )
+        )
 
-(doom-modeline-def-segment keyboard-layout
-  "Show currently active keyboard language"
-  (when (doom-modeline--segment-visible 'keyboard-layout) (concat (doom-modeline-wspc) (my/keyboard-layout))
-        ))
+  
+  (doom-modeline-def-segment keyboard-layout
+    "Show currently active keyboard language"
 
-;; Define your custom doom-modeline
-(doom-modeline-def-modeline 'my-simple-line
-  '(bar window-state workspace-name window-number modals matches follow buffer-info buffer-position word-count selection-info)
-  '(keyboard-layout misc-info project-name persp-name battery minor-modes input-method indent-info buffer-encoding major-mode process check time))
+    (when (doom-modeline--segment-visible 'keyboard-layout) (concat (doom-modeline-wspc)
+                                                                    (my/keyboard-layout)
+                                                                    )
+          ))
 
-;; Set default mode-line
-(add-hook 'doom-modeline-mode-hook
-          (lambda ()
-            (doom-modeline-set-modeline 'my-simple-line 'default)))
+  ;; Define your custom doom-modeline
+  (doom-modeline-def-modeline 'my-simple-line
+    '(bar window-state workspace-name window-number modals matches follow buffer-info buffer-position word-count selection-info)
+    '(keyboard-layout misc-info project-name persp-name battery minor-modes input-method indent-info buffer-encoding major-mode process check time))
 
-;; Configure other mode-lines based on major modes
-(add-to-list 'doom-modeline-mode-alist '(org-mode . my-simple-line))
+  ;; Set default mode-line
+  (add-hook 'doom-modeline-mode-hook
+            (lambda ()
+              (doom-modeline-set-modeline 'my-simple-line 'default)))
+
+  ;; Configure other mode-lines based on major modes
+  (add-to-list 'doom-modeline-mode-alist '(org-mode . my-simple-line)))
+  (add-to-list '+lookup-provider-url-alist '("IMDB" . "https://www.imdb.com/find/?q=%s"))
+
+
 
 ;; ...in addition to this (see https://github.com/doomemacs/doomemacs/issues/6478)
 (evil-select-search-module 'evil-search-module 'evil-search)
@@ -87,9 +113,15 @@
     (mark-sexp)
     (exchange-point-and-mark)))
 
+(defun capitalize-first-char (str)
+  "Capitalize only the first character of STR, leaving the rest unchanged."
+  (if (not (stringp str))
+      (error "Input must be a string")
+    (concat (upcase (substring str 0 1)) (substring str 1))))
+
 (defun text-to-wikipedia-link (string)
   "Convert a string to a link to English Wikipedia"
-  (concat "[[https://en.wikipedia.org/wiki/" (capitalize (subst-char-in-string ?  ?_ string)) "][" string "]]"))
+  (concat "[[https://en.wikipedia.org/wiki/" (capitalize-first-char (subst-char-in-string ?  ?_ string)) "][" string "]]"))
 
 (defun my/org-insert-wikipedia-link ()
   (interactive)
@@ -174,7 +206,7 @@
   (if (eq (length (window-list)) 1) (evil-window-vsplit)
     ;; (evil-window-up 1)
     )
-  (find-file "/Users/joshf/Documents/work_kbase.org")
+  (find-file "/Users/joshf/Documents/org/todo.org")
   (+org/open-all-folds)
   (evil-scroll-line-to-bottom (line-number-at-pos))
   (evil-window-right 1)
@@ -182,11 +214,24 @@
   (+org/open-all-folds)
   (evil-scroll-line-to-bottom (line-number-at-pos))
   (evil-scroll-line-down 20)
+  (evil-window-left 1)
+  (+evil-window-split-a)
+  (evil-window-down 1)
+  (find-file "/Users/joshf/Documents/work_kbase.org")
+  (evil-window-set-height 48)
+  (+org/open-all-folds)
+  ;; Fold the DONE items
+  (evil-goto-first-line)
+  (org-cycle)
   )
 
 (defun my/org-capture ()
   (interactive)
   (org-capture nil "k"))
+
+(defun my/org-capture-todo ()
+  (interactive)
+  (org-capture nil "S"))
 
 (defun my/edit-downloads ()
   "Open Downloads folder in dired"
@@ -221,7 +266,12 @@
                             entry (file+datetree +org-capture-journal-file)
                             "* %?"
                             ;; :empty-lines-before 1
-                            ))
+                            )
+                           ("S" "Add todo to stack"
+                            entry (file+headline +org-capture-todo-file "Stack")
+                            "* %?" :prepend t
+                            )
+                           )
    )
 
 
@@ -242,6 +292,7 @@
     :leader :desc "downloads folder" "oD" #'my/edit-downloads
     :leader :desc "empty SQL buffer" "nb" #'my/empty-sql-buffer
     :leader :desc "Org capture work thought" "x" #'my/org-capture
+    :leader :desc "Org capture todo item" "S" #'my/org-capture-todo
     :leader :desc "Set things up the way I like" "d" #'my/scroll-all-buffers-to-fill-screen
     )
    ))
@@ -288,6 +339,7 @@
 
 (add-hook! python-mode
                                         ; (+fold/close-all)         ; like in VS Code (does this work tho?)
+           (pyenv-mode-set "my_env312")
            (set-fill-column 120)
            (display-fill-column-indicator-mode)
            (python-ts-mode)
@@ -300,7 +352,7 @@
   ;; +format-with 'black
   lsp-pylsp-plugins-pylint-enabled t
   lsp-pylsp-plugins-pydocstyle-enabled nil
-  python-shell-virtualenv-root "my_env312"
+  ;; python-shell-virtualenv-root "my_env312"
                                         ; lsp-pylsp-plugins-flake8-config "/Users/josh/.flake8"
   )
 
@@ -363,6 +415,22 @@
        "\\(?:^[#.]\\)\\|\\(?:[#~]$\\)\\|\\(?:^Icon?\\)"
        ;; File names ending with # or ~
        "__pycache__"))
+
+
+;; fix yasnippet appearing in corfu completion
+;; https://github.com/doomemacs/doomemacs/issues/8183
+(add-hook! 'yas-minor-mode-hook
+    (defun +corfu-add-yasnippet-capf-h ()
+      (add-hook 'completion-at-point-functions #'yasnippet-capf -30 t)))
+
+(add-hook! '(prog-mode-hook
+                 text-mode-hook
+                 conf-mode-hook
+                 comint-mode-hook
+                 minibuffer-setup-hook
+                 eshell-mode-hook)
+      (defun +corfu-add-cape-dabbrev-h ()
+        (add-hook 'completion-at-point-functions #'cape-dabbrev -20 t)))
 
 ;; (emms-all)
 ;; (setq emms-player-list '(emms-player-mpv)
