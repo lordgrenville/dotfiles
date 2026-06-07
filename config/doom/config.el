@@ -54,20 +54,18 @@
 ;;   :group 'doom-modeline-faces)
 
 
-(after! modeline
+(after! doom-modeline
 
-
-
-        (defun my/keyboard-layout ()
-        (if (string-match-p "Hebrew"
+  (defun my/keyboard-layout ()
+    (if (string-match-p "Hebrew"
                         (shell-command-to-string "defaults read ~/Library/Preferences/com.apple.HIToolbox.plist AppleSelectedInputSources | grep \"KeyboardLayout Name\" ")
                         )
         (doom-modeline-icon 'mdicon "nf-md-abjad_hebrew" "א" "Hebrew" :face 'nerd-icons-red)
-        (doom-modeline-icon 'mdicon "nf-md-alphabetical_variant" "A" "English" :face 'nerd-icons-red)
-        ;; "ℷℶℵ"
-        ;; "ABC"
-        )
-        )
+      (doom-modeline-icon 'mdicon "nf-md-alphabetical_variant" "A" "English" :face 'nerd-icons-red)
+      ;; "ℷℶℵ"
+      ;; "ABC"
+      )
+    )
 
   
   (doom-modeline-def-segment keyboard-layout
@@ -89,8 +87,11 @@
               (doom-modeline-set-modeline 'my-simple-line 'default)))
 
   ;; Configure other mode-lines based on major modes
-  (add-to-list 'doom-modeline-mode-alist '(org-mode . my-simple-line)))
-  (add-to-list '+lookup-provider-url-alist '("IMDB" . "https://www.imdb.com/find/?q=%s"))
+  (add-to-list 'doom-modeline-mode-alist '(org-mode . my-simple-line))
+)
+
+
+(add-to-list '+lookup-provider-url-alist '("IMDB" . "https://www.imdb.com/find/?q=%s"))
 
 
 
@@ -203,6 +204,7 @@
 
 (defun my/scroll-all-buffers-to-fill-screen ()
   (interactive)
+  (delete-other-windows)
   (if (eq (length (window-list)) 1) (evil-window-vsplit)
     ;; (evil-window-up 1)
     )
