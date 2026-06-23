@@ -47,6 +47,8 @@
  )
 
 (display-time)
+(add-to-list 'exec-path "/Users/joshf/.venv/bin/")
+;; (doom-load-envvars-file "~/.doom.d/myenv")
 
 ;; (defface doom-modeline-keyboard-layout-face
 ;;   '((t (:inherit doom-modeline-info)))
@@ -339,24 +341,16 @@
 ;; if long file, fold it
 (if (< 50 (count-lines (point-min) (point-max))) (+fold/close-all))
 
-(add-hook! python-mode
-                                        ; (+fold/close-all)         ; like in VS Code (does this work tho?)
-           (pyenv-mode-set "my_env312")
+(add-hook! 'python-mode-hook
            (set-fill-column 120)
            (display-fill-column-indicator-mode)
            (python-ts-mode)
-           ;; (eglot-ensure)
            )
 
 
-(setq-hook! 'python-mode-hook
-  ;; pylsp formatter doesnt work, override it manually
+;; (setq-hook! 'python-mode-hook
   ;; +format-with 'black
-  lsp-pylsp-plugins-pylint-enabled t
-  lsp-pylsp-plugins-pydocstyle-enabled nil
-  ;; python-shell-virtualenv-root "my_env312"
-                                        ; lsp-pylsp-plugins-flake8-config "/Users/josh/.flake8"
-  )
+  ;; )
 
                                         ; don't autolaunch spell-fu
 (remove-hook 'text-mode-hook #'spell-fu-mode)

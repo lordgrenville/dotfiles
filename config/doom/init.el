@@ -31,7 +31,7 @@
        :ui
        ;;deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does
-       doom-dashboard    ; a nifty splash screen for Emacs
+       dashboard    ; a nifty splash screen for Emacs
        ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
        ;; (emoji +unicode)  ; 🙂
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
@@ -142,18 +142,18 @@
        ;;hy                ; readability of scheme w/ speed of p-y-thon
        ;;idris             ;
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
-       javascript        ; all(hope(abandon(ye(who(enter(here))))))
-       (julia +lsp)             ; a better, faster MATLAB
+       javascript          ; all(hope(abandon(ye(who(enter(here))))))
+       ;; (julia +lsp)     ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
        ;;latex             ; writing papers in Emacs has never been so fun
        ;;lean
        ;;factor
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
-       markdown          ; writing docs for people to ignore
+       markdown            ; writing docs for people to ignore
        ;;nim               ; p-y-thon + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
-       ;; ocaml             ; an objective camel
+       ;; ocaml            ; an objective camel
        (org
         +pretty
         +dragndrop)        ; organize your plain life in plain text
@@ -161,13 +161,12 @@
        (php
         +hack
         +lsp
-        +tree-sitter)               ; perl's insecure younger brother
+        +tree-sitter)      ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
        (python
         +lsp
         +tree-sitter
-        +pyenv
         )
        ;;qt                ; the 'cutest' gui framework ever
        ; (racket
