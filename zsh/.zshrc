@@ -63,6 +63,7 @@ alias ....="cd ../../.."
 alias noise='play -q -m "|sox -c 2 -n -p synth brownnoise band -n 1600 1500 tremolo .1 30" "|sox /Users/joshf/Music/adhd_focus.opus -p vol 10" &'
 # get current branch name
 alias branch="git rev-parse --abbrev-ref HEAD | tr -d '\n'"
+alias ai='echo "Using qwen2.5-coder:7b\n" && ollama run qwen2.5-coder:7b'
 
 bindkey "^[f" forward-word
 bindkey "^[b" backward-word
@@ -172,19 +173,9 @@ source /opt/homebrew/opt/zsh-autosuggestions/share/zsh-autosuggestions/zsh-autos
 # source /opt/homebrew/opt/zsh-abbr/share/zsh-abbr/zsh-abbr.zsh
 
 source "${HOME}/.iterm2_shell_integration.zsh"
+source "${HOME}/.venv/bin/activate"
 
 # [ -f "/Users/joshf/.ghcup/env" ] && . "/Users/joshf/.ghcup/env" # ghcup-env
-export PYENV_ROOT="$HOME/.pyenv"
-
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-py() {
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-    pyenv activate my_env312
-
-}
-
-# zprof
 
 # export NVM_DIR="$HOME/.nvm"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -205,7 +196,9 @@ noms () {
 
     if [ "$1" = "dessert" ]; then
         jq='.culinary_cafe_query.cafe_next_available_menu_v2.menu_foodcategory_query.edges | .[] | 
-            select(.node.food_category.name == "DESSERT" or .node.food_category.name == "Ice Cream") 
+            select(.node.food_category.name == "Dessert"
+                    or .node.food_category.name == "DESSERT"
+                    or .node.food_category.name == "Ice Cream")
             | .node.foodcard_query.edges[].node.name'
     else
         jq='{
@@ -223,3 +216,9 @@ noms () {
     jf graphql --query "$(<~/graphql/noms.graphql)" --variables "{\"culinary_cafe_id\": \"$cafe\",\"timestamp\":$(date +%s)}" | jq $jq
 }
 export PATH="/opt/homebrew/opt/jpeg/bin:$PATH"
+alias et='et --port 8080'
+
+# zprof
+
+
+. "$HOME/.local/bin/env"
