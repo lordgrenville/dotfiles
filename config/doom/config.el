@@ -16,29 +16,26 @@
  org-directory "~/Documents/org/"
  ;; org-hugo-base-dir "~/Documents/dev/blog/athena/"
  projectile-project-search-path '("~/Documents/")
-                                        ; This determines the style of line numbers in effect. If set to `nil', line
-                                        ; numbers are disabled. For relative line numbers, set this to `relative'.
+ ; This determines the style of line numbers in effect. If set to `nil', line
+ ; numbers are disabled. For relative line numbers, set this to `relative'.
  display-line-numbers-type 'visual
  lsp-modeline-diagnostics-enable nil
  ;; display time, and don't show me the system load, which makes no sense to me
  display-time-default-load-average 'nil
- ;; doom-modeline-hud t
- ;; doom-modeline-battery t
- ;; doom-modeline-time-icon t
  dired-kill-when-opening-new-dired-buffer t
  +ivy-buffer-preview t
-                                        ; in org-mode, TAB key cycles headings even inside text block, rather than emulating real tab
-                                        ; (matching the behaviour in Magit)
+ ; in org-mode, TAB key cycles headings even inside text block, rather than emulating real tab
+ ; (matching the behaviour in Magit)
  org-cycle-emulate-tab 'nil
  comint-scroll-to-bottom-on-output t
  ob-mermaid-cli-path "/opt/homebrew/bin/mmdc"
  ;; hide wrapping punctuation in org mode
  org-hide-emphasis-markers t
-                                        ; ignore org-mode and others in flycheck (syntax checker)
+ ; ignore org-mode and others in flycheck (syntax checker)
  flycheck-global-modes '(not gfm-mode forge-post-mode gitlab-ci-mode dockerfile-mode Org-mode org-mode)
  ispell-dictionary "en_ZA"
  ispell-hunspell-dict-paths-alist '(("en_ZA" . ("/Users/joshf/Library/Spelling/en_ZA.aff")))
-                                        ; for mac with external keyboard: https://github.com/hlissner/doom-emacs/issues/3952#issuecomment-716608614
+ ; for mac with external keyboard: https://github.com/hlissner/doom-emacs/issues/3952#issuecomment-716608614
  ns-right-option-modifier 'left
 
  browse-url-firefox-program "/Applications/Firefox.app/Contents/MacOS/firefox"
@@ -48,13 +45,6 @@
 
 (display-time)
 (add-to-list 'exec-path "/Users/joshf/.venv/bin/")
-;; (doom-load-envvars-file "~/.doom.d/myenv")
-
-;; (defface doom-modeline-keyboard-layout-face
-;;   '((t (:inherit doom-modeline-info)))
-;;   "Face for keyboard status."
-;;   :group 'doom-modeline-faces)
-
 
 (after! doom-modeline
 
@@ -165,9 +155,9 @@
              (= (char-after (point)) 10))
     (evil-previous-line)))
 
-                                        ; in doom instead of define-key you have a  macro map!
-                                        ; you can prepend :leader, or :en for emacs, normal mode etc
-                                        ; more at :h map!
+; in doom instead of define-key you have a  macro map!
+; you can prepend :leader, or :en for emacs, normal mode etc
+; more at :h map!
 (map!
  :n "]s"   #'evil-next-flyspell-error
  :n "[s"   #'evil-prev-flyspell-error
@@ -310,27 +300,7 @@
 ;;            ;; #'turn-off-smartparens-mode
 ;;            'org-fragtog-mode)
 
-;; (defun my/query-fixup-tool (&optional project)
-;;   ;;Replace in either the region or the buffer and copy to clipboard.
-;;   ;;Defaults to migration or production, can also give a project name
-;;   (interactive)
-;;   (let (
-;;         (begin (if (use-region-p) (point) (point-min)))
-;;         (end   (if (use-region-p) (mark) (point-max)))
-;;         )
-;;     (kill-ring-save begin end))
-;;   (with-temp-buffer
-;;     (yank)
-;;     (replace-string-in-region "PROJECTID_REPLACE" "anzu-179515" (point-min))
-;;     (let (
-;;           ;; if project is null (the default, so can mean it was not supplied) then use y-or-n-p
-;;           (replacement (if project project (if (y-or-n-p "Replace with migration?") "migration" "production")))
-;;           )
-;;       (replace-string-in-region "DATASET_REPLACE" replacement (point-min)))
-;;     (kill-region (point-min) (point-max)))
-;;   )
-
-                                        ; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
+; lines should be the screen length of my MBP, not 80 (emacs default) or 70 (org-mode default!)
 ;; (setq-hook! '(text-mode-hook) fill-column 145)
 
 ;; (after! treemacs
@@ -348,11 +318,7 @@
            )
 
 
-;; (setq-hook! 'python-mode-hook
-  ;; +format-with 'black
-  ;; )
-
-                                        ; don't autolaunch spell-fu
+; don't autolaunch spell-fu
 (remove-hook 'text-mode-hook #'spell-fu-mode)
 (add-hook 'text-mode-hook #'flyspell-mode)
 
@@ -369,7 +335,7 @@
 ;; (evil-set-initial-state mode 'emacs))
 
 ;; stuff from Tecosaur, not major
-                                        ;; show battery status in bottom right
+;; show battery status in bottom right
 (unless (equal "Battery status not available"
                (battery))
   (display-battery-mode 1))
@@ -428,22 +394,19 @@
       (defun +corfu-add-cape-dabbrev-h ()
         (add-hook 'completion-at-point-functions #'cape-dabbrev -20 t)))
 
-;; (emms-all)
-;; (setq emms-player-list '(emms-player-mpv)
-;;       emms-info-functions '(emms-info-native))
-                                        ; Here are some additional functions/macros that could help you configure Doom:
-                                        ;
-                                        ; - `load!' for loading external *.el files relative to this one
-                                        ; - `use-package' for configuring packages
-                                        ; - `after!' for running code after a package has loaded
-                                        ; - `add-load-path!' for adding directories to the `load-path', relative to
-                                        ;   this file. Emacs searches the `load-path' when you load packages with
-                                        ;   `require' or `use-package'.
-                                        ; - `map!' for binding new keys
-                                        ;
-                                        ; To get information about any of these functions/macros, move the cursor over
-                                        ; the highlighted symbol at press 'K' (non-evil users must press 'C-c g k').
-                                        ; This will open documentation for it, including demos of how they are used.
+; Here are some additional functions/macros that could help you configure Doom:
+;
+; - `load!' for loading external *.el files relative to this one
+; - `use-package' for configuring packages
+; - `after!' for running code after a package has loaded
+; - `add-load-path!' for adding directories to the `load-path', relative to
+;   this file. Emacs searches the `load-path' when you load packages with
+;   `require' or `use-package'.
+; - `map!' for binding new keys
+;
+; To get information about any of these functions/macros, move the cursor over
+; the highlighted symbol at press 'K' (non-evil users must press 'C-c g k').
+; This will open documentation for it, including demos of how they are used.
 
-                                        ; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
-                                        ; they are implemented.
+; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
+; they are implemented.
